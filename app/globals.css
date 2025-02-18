@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #141526;
+  --foreground: #ffffff;
+}
+
+body {
+  font-family: 'Kanit', sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+} 
