@@ -40,6 +40,13 @@ export default function Home() {
                             <span>อุปกรณ์ทั้งหมด: {scanStats.totalDevices}</span>
                         </div>
                         
+                        {scanStats.scanProgress === 100 && devices.length > 0 && (
+                            <div className="bg-[rgba(35,37,57,0.95)] rounded-xl p-6 mb-6">
+                                <h2 className="text-xl font-semibold mb-4">อุปกรณ์ที่พบในเครือข่าย</h2>
+                                <p className="text-gray-400 mb-6">พบอุปกรณ์ทั้งหมด {scanStats.totalDevices} รายการ, มีความเสี่ยง {scanStats.vulnerableDevices} รายการ</p>
+                            </div>
+                        )}
+                        
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {devices.map((device) => (
                                 <ResultCard 

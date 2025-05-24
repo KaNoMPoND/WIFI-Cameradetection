@@ -1,11 +1,11 @@
 'use client';
 
-import { useScan } from '../context/ScanContext';
 import { useState } from 'react';
+import { useScan } from '../context/ScanContext';
 
 interface ResultCardProps {
     deviceId: string;
-    title: string;
+    title?: string;
     showDetails?: boolean;
 }
 
@@ -22,7 +22,7 @@ export default function ResultCard({
     
     if (!device) return null;
     
-    const { name, ip, type, risk, vulnerabilities } = device;
+    const { name, ip, type, risk, vulnerabilities, manufacturer, model, mac } = device;
     
     const handleAttack = () => {
         attackDevice(ip);
@@ -53,38 +53,76 @@ export default function ResultCard({
             default: return 'ปลอดภัย';
         }
     };
-
+    
     return (
-        <div className="bg-[#1a1b2e] p-6 rounded-xl">
-            <h3 className="text-[#8d8e98] text-sm uppercase mb-4">{title}</h3>
-            <div className="bg-[#232539] p-4 rounded-lg mb-3">
+        <div className="bg-[#1a1b2e] rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-900/20">
+            <div className="p-5">
                 <div className="flex justify-between items-start mb-3">
                     <div>
-                        <div className="font-bold text-lg">{name}</div>
-                        <div className="text-[#8d8e98] text-sm">
-                            <span className="inline-block mr-3">{ip}</span>
-                            <span className="inline-block">{type}</span>
-                        </div>
+                        <div className="font-semibold text-lg">{name}</div>
+                        <div className="text-sm text-[#8d8e98]">{type}</div>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs ${getRiskBadgeClass()}`}>
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs ${getRiskBadgeClass()}`}>
                         {getRiskLabel()}
                     </span>
                 </div>
                 
-                {(vulnerabilities.length > 0 || expanded) && (
-                    <div className={`mt-3 pt-3 border-t border-[#2a2d43] ${expanded ? 'block' : ''}`}>
-                        <div className="flex justify-between items-center mb-2">
-                            <div className="text-sm font-semibold">
-                                ช่องโหว่ที่พบ: {vulnerabilities.length}
-                            </div>
-                            <button 
-                                onClick={() => setExpanded(!expanded)}
-                                className="text-sm text-blue-400 hover:text-blue-300"
-                            >
-                                {expanded ? 'ซ่อน' : 'แสดงเพิ่มเติม'}
-                            </button>
+                <div className="space-y-1 mb-4 text-sm text-[#8d8e98]">
+                    <div className="flex justify-between">
+                        <span>IP:</span>
+                        <span className="text-white">{ip}</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span>MAC:</span>
+                        <span className="text-white">{mac}</span>
+                    </div>
+                    {manufacturer && (
+                        <div className="flex justify-between">
+                            <span>ผู้ผลิต:</span>
+                            <span className="text-white">{manufacturer}</span>
                         </div>
-                        
+                    )}
+                    {model && (
+                        <div className="flex justify-between">
+                            <span>รุ่น:</span>
+                            <span className="text-white">{model}</span>
+                        </div>
+                    )}
+                    <div className="flex justify-between">
+                        <span>ช่องโหว่:</span>
+                        <span className="text-white">{vulnerabilities.length} รายการ</span>
+                    </div>
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
+                    <button 
+                        className="flex-1 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                        onClick={handleViewDetails}
+                    >
+                        ดูรายละเอียด
+                    </button>
+                    
+                    {risk !== 'safe' && (
+                        <button 
+                            className="flex-1 bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm"
+                            onClick={handleAttack}
+                        >
+                            ทดสอบการโจมตี
+                        </button>
+                    )}
+                    
+                    {showDetails && (
+                        <button 
+                            className="flex-1 bg-[#232539] text-white px-3 py-2 rounded-lg hover:bg-[#2a2d43] transition-colors text-sm"
+                            onClick={() => setExpanded(!expanded)}
+                        >
+                            {expanded ? 'ซ่อนรายละเอียด' : 'แสดงช่องโหว่'}
+                        </button>
+                    )}
+                </div>
+                
+                {showDetails && (
+                    <div className="mt-3">
                         {expanded && (
                             <div className="space-y-3 mt-2">
                                 {vulnerabilities.map(vuln => (
@@ -114,24 +152,13 @@ export default function ResultCard({
                 )}
             </div>
             
-            <div className="flex space-x-2">
-                {risk !== 'safe' && (
-                    <button 
-                        onClick={handleAttack}
-                        className="bg-red-600 text-white px-4 py-2 rounded 
-                                 hover:bg-red-700 transition-colors flex-1"
-                    >
-                        ทดสอบการโจมตี
-                    </button>
-                )}
-                
-                <button 
-                    onClick={handleViewDetails}
-                    className="bg-[#3498db] text-white px-4 py-2 rounded 
-                             hover:bg-[#2980b9] transition-colors flex-1"
-                >
-                    ดูรายละเอียด
-                </button>
+            <div className="w-full h-1">
+                <div className={`h-full ${
+                    risk === 'high' ? 'bg-gradient-to-r from-red-500 to-red-700' :
+                    risk === 'medium' ? 'bg-gradient-to-r from-yellow-500 to-yellow-700' :
+                    risk === 'low' ? 'bg-gradient-to-r from-blue-500 to-blue-700' :
+                    'bg-gradient-to-r from-green-500 to-green-700'
+                }`}></div>
             </div>
         </div>
     );
