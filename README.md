@@ -1,36 +1,181 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# IoT Security Scanner
 
-## Getting Started
+เว็บแอปพลิเคชันสำหรับตรวจสอบความปลอดภัยของอุปกรณ์ IoT ในเครือข่าย เพื่อค้นหาช่องโหว่และแนะนำวิธีการแก้ไข
 
-First, run the development server:
+![IoT Security Scanner](./public/screenshots/main-page.png)
+
+## 📑 สารบัญ
+
+- [คุณสมบัติ](#คุณสมบัติ)
+- [เทคโนโลยีที่ใช้](#เทคโนโลยีที่ใช้)
+- [การติดตั้ง](#การติดตั้ง)
+- [วิธีการใช้งาน](#วิธีการใช้งาน)
+- [โครงสร้างโปรเจกต์](#โครงสร้างโปรเจกต์)
+- [หน้าจอแอปพลิเคชัน](#หน้าจอแอปพลิเคชัน)
+- [การพัฒนาเพิ่มเติม](#การพัฒนาเพิ่มเติม)
+- [ผู้พัฒนา](#ผู้พัฒนา)
+
+## 🚀 คุณสมบัติ
+
+- **สแกนอุปกรณ์ IoT** - ค้นหาอุปกรณ์ IoT ในเครือข่ายท้องถิ่นโดยอัตโนมัติ
+- **ตรวจสอบช่องโหว่** - วิเคราะห์ช่องโหว่ด้านความปลอดภัยในอุปกรณ์แต่ละชิ้น
+- **ทดสอบการโจมตี** - จำลองการโจมตีเพื่อทดสอบความเสี่ยงที่แท้จริง
+- **รายงานแบบละเอียด** - แสดงรายงานที่ครอบคลุมพร้อมคำแนะนำในการแก้ไข
+- **ติดตามประวัติการแสกน** - ดูและเปรียบเทียบผลการแสกนย้อนหลัง
+- **การตั้งค่าส่วนบุคคล** - ปรับแต่งการแสกน การแจ้งเตือน และการตั้งค่าความเป็นส่วนตัว
+
+## 🛠 เทคโนโลยีที่ใช้
+
+- **Frontend**
+  - [Next.js](https://nextjs.org/) (เวอร์ชัน 15.1.7) - React framework สำหรับการสร้างเว็บแอปพลิเคชัน
+  - [React](https://reactjs.org/) (เวอร์ชัน 19.0.0) - JavaScript library สำหรับสร้าง UI
+  - [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
+  - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+
+- **Development Tools**
+  - [ESLint](https://eslint.org/) - เครื่องมือสำหรับตรวจสอบโค้ด JavaScript
+  - [PostCSS](https://postcss.org/) - เครื่องมือสำหรับแปลง CSS ด้วย JavaScript
+
+## 🔧 การติดตั้ง
+
+### ความต้องการของระบบ
+
+- Node.js 18.x หรือใหม่กว่า
+- npm 9.x หรือใหม่กว่า
+
+### ขั้นตอนการติดตั้ง
+
+1. โคลนโปรเจกต์:
+
+```bash
+git clone https://github.com/DiiwzZ/iot-security-scanner.git
+cd iot-security-scanner
+```
+
+2. ติดตั้ง dependencies:
+
+```bash
+npm install
+```
+
+3. รันเซิร์ฟเวอร์สำหรับการพัฒนา:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. เปิดเว็บเบราว์เซอร์และไปที่ [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📋 วิธีการใช้งาน
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **การแสกนอุปกรณ์**
+   - ไปที่หน้าหลักและกดปุ่ม "เริ่มการแสกน" เพื่อค้นหาอุปกรณ์ IoT ในเครือข่าย
+   - ระบบจะแสดงความคืบหน้าการแสกนและแสดงอุปกรณ์ที่พบพร้อมระดับความเสี่ยง
 
-## Learn More
+2. **ดูรายละเอียดอุปกรณ์**
+   - คลิกที่ปุ่ม "ดูรายละเอียด" ของอุปกรณ์ที่ต้องการเพื่อดูข้อมูลเชิงลึก
+   - ดูช่องโหว่ที่ตรวจพบและวิธีการแก้ไข
 
-To learn more about Next.js, take a look at the following resources:
+3. **ทดสอบการโจมตี**
+   - คลิกที่ปุ่ม "ทดสอบการโจมตี" เพื่อจำลองการโจมตีอุปกรณ์
+   - ดูผลลัพธ์และประเมินความเสี่ยงที่แท้จริง
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **ดูประวัติการแสกน**
+   - ไปที่หน้า "ประวัติการแสกน" เพื่อดูการแสกนที่ผ่านมา
+   - คลิกที่ "ดูรายงาน" เพื่อดูรายละเอียดเพิ่มเติมของการแสกนแต่ละครั้ง
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. **การตั้งค่า**
+   - ไปที่หน้า "ตั้งค่า" เพื่อปรับแต่งการทำงานของแอปพลิเคชัน
+   - ตั้งค่าการแสกนอัตโนมัติ การแจ้งเตือน และความเป็นส่วนตัว
 
-## Deploy on Vercel
+## 📁 โครงสร้างโปรเจกต์
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+iot-security-scanner/
+├── app/                   # โค้ดหลักของแอปพลิเคชัน
+│   ├── components/        # React components ที่ใช้ร่วมกัน
+│   │   ├── AuthButton.tsx # ปุ่มสำหรับการยืนยันตัวตน
+│   │   ├── AuthInput.tsx  # Input field สำหรับการยืนยันตัวตน
+│   │   ├── AuthLayout.tsx # Layout สำหรับหน้า login/register
+│   │   ├── DeviceDetails.tsx # แสดงรายละเอียดอุปกรณ์
+│   │   ├── Navbar.tsx     # Navigation bar
+│   │   ├── ResultCard.tsx # การ์ดแสดงผลอุปกรณ์ที่ตรวจพบ
+│   │   ├── ScanButton.tsx # ปุ่มเริ่มการแสกน
+│   │   └── Stats.tsx      # แสดงสถิติการแสกน
+│   ├── context/           # React context
+│   │   └── ScanContext.tsx # Context สำหรับการจัดการข้อมูลการแสกน
+│   ├── login/             # หน้าเข้าสู่ระบบ
+│   │   └── page.tsx
+│   ├── register/          # หน้าลงทะเบียน
+│   │   └── page.tsx
+│   ├── report/            # หน้ารายงาน
+│   │   └── page.tsx
+│   ├── scan-history/      # หน้าประวัติการแสกน
+│   │   └── page.tsx
+│   ├── settings/          # หน้าตั้งค่า
+│   │   └── page.tsx
+│   ├── globals.css        # Global CSS
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # หน้าหลัก (หน้าแสกน)
+├── public/                # Static files
+│   └── screenshots/       # รูปภาพ screenshot
+├── .next/                 # Next.js build output
+├── node_modules/          # Dependencies
+├── .gitignore             # Git ignore file
+├── eslint.config.mjs      # ESLint configuration
+├── next-env.d.ts          # Next.js TypeScript declarations
+├── next.config.ts         # Next.js configuration
+├── package-lock.json      # NPM lock file
+├── package.json           # Project dependencies and scripts
+├── postcss.config.mjs     # PostCSS configuration
+├── README.md              # Project documentation
+├── tailwind.config.ts     # Tailwind CSS configuration
+└── tsconfig.json          # TypeScript configuration
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📸 หน้าจอแอปพลิเคชัน
+
+### 1. หน้าหลัก (หน้าแสกน)
+![หน้าหลัก](./public/screenshots/main-page.png)
+- หน้าจอหลักสำหรับเริ่มการแสกนและดูผลลัพธ์
+
+### 2. หน้ารายละเอียดอุปกรณ์
+![รายละเอียดอุปกรณ์](./public/screenshots/device-details.png)
+- แสดงข้อมูลเชิงลึกของอุปกรณ์และช่องโหว่ที่ตรวจพบ
+
+### 3. หน้าประวัติการแสกน
+![ประวัติการแสกน](./public/screenshots/scan-history.png)
+- แสดงประวัติการแสกนที่ผ่านมาทั้งหมด
+
+### 4. หน้ารายงาน
+![รายงาน](./public/screenshots/report.png)
+- แสดงรายงานโดยละเอียดของการแสกนแต่ละครั้ง
+
+### 5. หน้าตั้งค่า
+![ตั้งค่า](./public/screenshots/settings.png)
+- ปรับแต่งการทำงานของแอปพลิเคชัน
+
+### 6. หน้าเข้าสู่ระบบ/ลงทะเบียน
+![เข้าสู่ระบบ](./public/screenshots/login.png)
+- หน้าจอสำหรับเข้าสู่ระบบและลงทะเบียน
+
+## 🔮 การพัฒนาเพิ่มเติม
+
+- [ ] เพิ่มการเชื่อมต่อกับฐานข้อมูลจริง
+- [ ] พัฒนาระบบการตรวจจับอุปกรณ์แบบ real-time
+- [ ] เพิ่มการทดสอบความปลอดภัยขั้นสูง
+- [ ] รองรับการสแกนอุปกรณ์ IoT จากระยะไกล
+- [ ] พัฒนา API สำหรับการใช้งานร่วมกับระบบอื่น
+- [ ] เพิ่มฟีเจอร์การแจ้งเตือนแบบ real-time
+- [ ] พัฒนาแอปพลิเคชันบนมือถือ
+
+## 👨‍💻 ผู้พัฒนา
+
+- [ชื่อผู้พัฒนา] - นักพัฒนาหลัก
+- [DiiwzZ](https://github.com/DiiwzZ) - เจ้าของโปรเจกต์
+
+---
+
+โปรเจกต์นี้พัฒนาด้วย [Next.js](https://nextjs.org/) และ [Tailwind CSS](https://tailwindcss.com/) เริ่มต้นจาก [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app)
+
+📄 [MIT License](./LICENSE) - รายละเอียดลิขสิทธิ์
