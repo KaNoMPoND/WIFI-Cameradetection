@@ -12,8 +12,6 @@ interface Device {
   vulnerabilities: Vulnerability[];
   lastScan?: string;
   isOnline: boolean;
-  manufacturer?: string;
-  model?: string;
 }
 
 interface Vulnerability {
@@ -45,7 +43,7 @@ interface ScanContextType {
   cancelScan: () => void;
 }
 
-// ข้อมูลอุปกรณ์จำลองที่หลากหลาย
+// ข้อมูลอุปกรณ์จำลอง
 const mockDevices: Device[] = [
   {
     id: '1',
@@ -55,8 +53,6 @@ const mockDevices: Device[] = [
     type: 'Router',
     risk: 'high',
     isOnline: true,
-    manufacturer: 'TP-Link',
-    model: 'Archer C7',
     vulnerabilities: [
       {
         id: 'v1',
@@ -82,8 +78,6 @@ const mockDevices: Device[] = [
     type: 'Camera',
     risk: 'medium',
     isOnline: true,
-    manufacturer: 'Xiaomi',
-    model: 'Mi Home Camera 1080p',
     vulnerabilities: [
       {
         id: 'v3',
@@ -102,8 +96,6 @@ const mockDevices: Device[] = [
     type: 'Smart TV',
     risk: 'low',
     isOnline: true,
-    manufacturer: 'Samsung',
-    model: 'UE50AU7100',
     vulnerabilities: [
       {
         id: 'v4',
@@ -122,86 +114,23 @@ const mockDevices: Device[] = [
     type: 'Smart Light',
     risk: 'safe',
     isOnline: true,
-    manufacturer: 'Philips',
-    model: 'Hue White and Color',
     vulnerabilities: []
   },
   {
     id: '5',
-    name: 'Amazon Echo Dot',
+    name: 'Smart Lock Yale',
     ip: '192.168.1.25',
-    mac: '22:33:44:55:66:77',
-    type: 'Smart Speaker',
-    risk: 'medium',
+    mac: 'AA:BB:CC:11:22:33',
+    type: 'Smart Lock',
+    risk: 'high',
     isOnline: true,
-    manufacturer: 'Amazon',
-    model: 'Echo Dot 4th Gen',
     vulnerabilities: [
       {
         id: 'v5',
-        name: 'Insecure MQTT Configuration',
-        description: 'อุปกรณ์ใช้การตั้งค่า MQTT ที่ไม่ปลอดภัย อาจถูกนำไปใช้ในการดักฟังข้อมูล',
-        severity: 'medium',
-        solution: 'เปิดใช้งานการเข้ารหัส TLS สำหรับการเชื่อมต่อ MQTT และตั้งค่ารหัสผ่านที่ซับซ้อน'
-      }
-    ]
-  },
-  {
-    id: '6',
-    name: 'Tuya Smart Plug',
-    ip: '192.168.1.30',
-    mac: '88:99:AA:BB:CC:DD',
-    type: 'Smart Plug',
-    risk: 'high',
-    isOnline: true,
-    manufacturer: 'Tuya',
-    model: 'SP10',
-    vulnerabilities: [
-      {
-        id: 'v6',
-        name: 'Weak Encryption',
-        description: 'อุปกรณ์ใช้การเข้ารหัสที่อ่อนแอ ทำให้สามารถถูกถอดรหัสได้ง่าย',
+        name: 'Unencrypted Communication',
+        description: 'อุปกรณ์ส่งข้อมูลโดยไม่มีการเข้ารหัส ทำให้ข้อมูลอาจถูกดักจับได้',
         severity: 'high',
-        solution: 'อัปเดตเฟิร์มแวร์เป็นเวอร์ชันล่าสุดที่รองรับการเข้ารหัสที่แข็งแกร่งขึ้น'
-      },
-      {
-        id: 'v7',
-        name: 'Hardcoded Credentials',
-        description: 'พบรหัสผ่านที่ถูกฝังอยู่ในเฟิร์มแวร์ ซึ่งอาจถูกนำไปใช้ในการเข้าถึงอุปกรณ์',
-        severity: 'high',
-        solution: 'ติดต่อผู้ผลิตเพื่อขอการอัพเดทเฟิร์มแวร์ที่แก้ไขปัญหานี้'
-      }
-    ]
-  },
-  {
-    id: '7',
-    name: 'MacBook Pro',
-    ip: '192.168.1.35',
-    mac: 'EE:FF:11:22:33:44',
-    type: 'Computer',
-    risk: 'safe',
-    isOnline: true,
-    manufacturer: 'Apple',
-    model: 'MacBook Pro M1',
-    vulnerabilities: []
-  },
-  {
-    id: '8',
-    name: 'iPhone 13',
-    ip: '192.168.1.40',
-    mac: '55:66:77:88:99:00',
-    type: 'Mobile',
-    risk: 'low',
-    isOnline: true,
-    manufacturer: 'Apple',
-    model: 'iPhone 13 Pro',
-    vulnerabilities: [
-      {
-        id: 'v8',
-        name: 'Outdated iOS Version',
-        description: 'อุปกรณ์ใช้ iOS เวอร์ชันที่ไม่ได้รับการอัปเดตล่าสุด',
-        severity: 'low',
-        solution: 'อัปเดต iOS เป็นเวอร์ชันล่าสุดในการตั้งค่า'
+        solution: 'เปิดใช้งานการเข้ารหัสในการตั้งค่าอุปกรณ์ หรือติดต่อผู้ผลิตเพื่อขอการอัพเดท'
       }
     ]
   }
@@ -233,70 +162,61 @@ export function ScanProvider({ children }: { children: React.ReactNode }) {
       return sum + device.vulnerabilities.filter(v => v.severity === 'high').length;
     }, 0);
 
-    setScanStats({
-      ...scanStats,
+    setScanStats(prev => ({
+      ...prev,
       totalDevices: currentDevices.length,
       vulnerableDevices: vulnerableDevices.length,
       totalVulnerabilities,
       highRiskVulnerabilities,
       lastScanTime: new Date().toLocaleString('th-TH'),
-    });
+    }));
   };
 
   const startScan = async () => {
+    // รีเซ็ตค่าเริ่มต้น
     setScanning(true);
     setScanProgress(0);
     setDevices([]);
-    setScanStats(prev => ({ ...prev, scanProgress: 0 }));
-
-    // จำลองการค้นพบอุปกรณ์ตามลำดับเวลา
-    const discoverySteps = [
-      { progress: 15, devices: [mockDevices[0]] }, // Router ค้นพบเป็นอันดับแรก
-      { progress: 25, devices: [mockDevices[0], mockDevices[6]] }, // พบคอมพิวเตอร์
-      { progress: 35, devices: [mockDevices[0], mockDevices[6], mockDevices[7]] }, // พบมือถือ
-      { progress: 45, devices: [mockDevices[0], mockDevices[6], mockDevices[7], mockDevices[2]] }, // พบ Smart TV
-      { progress: 55, devices: [mockDevices[0], mockDevices[6], mockDevices[7], mockDevices[2], mockDevices[1]] }, // พบกล้อง
-      { progress: 65, devices: [mockDevices[0], mockDevices[6], mockDevices[7], mockDevices[2], mockDevices[1], mockDevices[4]] }, // พบลำโพงอัจฉริยะ
-      { progress: 75, devices: [mockDevices[0], mockDevices[6], mockDevices[7], mockDevices[2], mockDevices[1], mockDevices[4], mockDevices[3]] }, // พบหลอดไฟอัจฉริยะ
-      { progress: 85, devices: [mockDevices[0], mockDevices[6], mockDevices[7], mockDevices[2], mockDevices[1], mockDevices[4], mockDevices[3], mockDevices[5]] }, // พบ Smart Plug
-    ];
-
-    // จำลองการค้นพบอุปกรณ์
-    for (const step of discoverySteps) {
-      if (!scanning) break; // ถ้ามีการยกเลิกการแสกน
+    setScanStats(prev => ({...prev, scanProgress: 0}));
+    
+    let isCancelled = false;
+    
+    // จำลองการแสกนอุปกรณ์ทีละชิ้น
+    for (let i = 10; i <= 100; i += 10) {
+      if (isCancelled) break;
       
-      await new Promise(resolve => setTimeout(resolve, 600)); // จำลองการแสกน
-      setScanProgress(step.progress);
-      setScanStats(prev => ({ ...prev, scanProgress: step.progress }));
-      setDevices(step.devices);
+      // จำลองการแสกน
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      // อัพเดทสถิติการสแกนตามจำนวนอุปกรณ์ที่พบ
-      updateScanStats(step.devices);
+      // อัพเดทความคืบหน้า
+      setScanProgress(i);
+      setScanStats(prev => ({...prev, scanProgress: i}));
+      
+      // เพิ่มอุปกรณ์ตามความคืบหน้า
+      if (i === 20) {
+        setDevices([mockDevices[0]]);
+      } else if (i === 40) {
+        setDevices([mockDevices[0], mockDevices[1]]);
+      } else if (i === 60) {
+        setDevices([mockDevices[0], mockDevices[1], mockDevices[2]]);
+      } else if (i === 80) {
+        setDevices([mockDevices[0], mockDevices[1], mockDevices[2], mockDevices[3]]);
+      } else if (i === 100) {
+        // เมื่อสแกนเสร็จสิ้น แสดงอุปกรณ์ทั้งหมด
+        setDevices(mockDevices);
+        // อัพเดทสถิติการสแกน
+        updateScanStats(mockDevices);
+      }
     }
-
-    // จำลองการวิเคราะห์ช่องโหว่
-    if (scanning) {
-      setScanProgress(90);
-      setScanStats(prev => ({ ...prev, scanProgress: 90 }));
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setScanProgress(95);
-      setScanStats(prev => ({ ...prev, scanProgress: 95 }));
-      await new Promise(resolve => setTimeout(resolve, 800));
-    }
-
-    // เสร็จสิ้นการสแกน
-    if (scanning) {
-      setScanProgress(100);
-      setScanStats(prev => ({ ...prev, scanProgress: 100 }));
-      updateScanStats(mockDevices);
-      setDevices(mockDevices);
-      setScanning(false);
-    }
+    
+    // เมื่อสแกนเสร็จสิ้น
+    setScanning(false);
   };
 
   const cancelScan = () => {
     setScanning(false);
     setScanProgress(0);
+    setDevices([]);
     setScanStats(prev => ({...prev, scanProgress: 0}));
   };
 

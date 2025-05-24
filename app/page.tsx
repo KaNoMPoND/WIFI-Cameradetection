@@ -41,9 +41,12 @@ export default function Home() {
                         </div>
                         
                         {scanStats.scanProgress === 100 && devices.length > 0 && (
-                            <div className="bg-[rgba(35,37,57,0.95)] rounded-xl p-6 mb-6">
-                                <h2 className="text-xl font-semibold mb-4">อุปกรณ์ที่พบในเครือข่าย</h2>
-                                <p className="text-gray-400 mb-6">พบอุปกรณ์ทั้งหมด {scanStats.totalDevices} รายการ, มีความเสี่ยง {scanStats.vulnerableDevices} รายการ</p>
+                            <div className="mb-4">
+                                <h2 className="text-xl font-semibold mb-2">อุปกรณ์ที่พบในเครือข่าย</h2>
+                                <p className="text-[#8d8e98] text-sm">
+                                    พบอุปกรณ์ทั้งหมด {scanStats.totalDevices} รายการ, 
+                                    มีความเสี่ยง {scanStats.vulnerableDevices} รายการ
+                                </p>
                             </div>
                         )}
                         
@@ -65,6 +68,9 @@ export default function Home() {
                             {devices.length === 0 && scanStats.scanProgress === 100 && (
                                 <div className="col-span-full bg-[#1a1b2e] p-6 rounded-xl text-center">
                                     <p className="text-[#8d8e98]">ไม่พบอุปกรณ์ในเครือข่าย</p>
+                                    <p className="text-[#8d8e98] text-sm mt-2">
+                                        โปรดตรวจสอบการเชื่อมต่อเครือข่ายของคุณหรือลองสแกนอีกครั้ง
+                                    </p>
                                 </div>
                             )}
                         </div>
