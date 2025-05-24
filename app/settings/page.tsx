@@ -3,6 +3,13 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 
+interface WhitelistDevice {
+    id: string;
+    name: string;
+    ip: string;
+    mac: string;
+}
+
 export default function Settings() {
     // ตั้งค่าการแสกน
     const [scanSettings, setScanSettings] = useState({
@@ -10,7 +17,8 @@ export default function Settings() {
         scanFrequency: 'daily',
         scanTime: '00:00',
         notifyOnComplete: true,
-        scanDeepInspection: false
+        scanDeepInspection: false,
+        enableWhitelist: false
     });
     
     // ตั้งค่าการแจ้งเตือน
@@ -28,6 +36,19 @@ export default function Settings() {
         collectAnonymousData: true,
         shareStatistics: false,
         storeHistory: 30 // จำนวนวันที่จะเก็บประวัติ
+    });
+    
+    // อุปกรณ์ใน whitelist
+    const [whitelistDevices, setWhitelistDevices] = useState<WhitelistDevice[]>([
+        { id: '1', name: 'Router Admin', ip: '192.168.1.1', mac: '00:11:22:33:44:55' },
+        { id: '2', name: 'Smart TV', ip: '192.168.1.15', mac: 'AA:BB:CC:DD:EE:FF' }
+    ]);
+    
+    // สำหรับเพิ่มอุปกรณ์ใหม่ใน whitelist
+    const [newDevice, setNewDevice] = useState<Omit<WhitelistDevice, 'id'>>({
+        name: '',
+        ip: '',
+        mac: ''
     });
     
     const [activeTab, setActiveTab] = useState<'scan' | 'notification' | 'privacy'>('scan');
@@ -60,6 +81,35 @@ export default function Settings() {
             ...prev,
             [name]: type === 'checkbox' ? checked : value === 'true' ? true : value === 'false' ? false : value
         }));
+    };
+    
+    const handleNewDeviceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setNewDevice(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    
+    const addDeviceToWhitelist = () => {
+        // ตรวจสอบว่ากรอกข้อมูลครบหรือไม่
+        if (!newDevice.name || !newDevice.ip || !newDevice.mac) {
+            alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+            return;
+        }
+        
+        // สร้าง ID ใหม่
+        const id = (whitelistDevices.length + 1).toString();
+        
+        // เพิ่มอุปกรณ์ใหม่เข้า whitelist
+        setWhitelistDevices(prev => [...prev, { ...newDevice, id }]);
+        
+        // รีเซ็ตฟอร์ม
+        setNewDevice({ name: '', ip: '', mac: '' });
+    };
+    
+    const removeDeviceFromWhitelist = (id: string) => {
+        setWhitelistDevices(prev => prev.filter(device => device.id !== id));
     };
     
     const handleSaveSettings = () => {
@@ -181,6 +231,118 @@ export default function Settings() {
                                 <label htmlFor="scanDeepInspection" className="text-sm font-medium">
                                     แสกนแบบละเอียด (ใช้เวลานานขึ้น)
                                 </label>
+                            </div>
+                            
+                            {/* Whitelist Section */}
+                            <div className="mt-8 pt-6 border-t border-[#2a2d43]">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h3 className="font-medium">Whitelist อุปกรณ์</h3>
+                                        <p className="text-sm text-gray-400">กำหนดรายการอุปกรณ์ที่ต้องการยกเว้นจากการสแกน</p>
+                                    </div>
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            className="sr-only peer" 
+                                            name="enableWhitelist"
+                                            checked={scanSettings.enableWhitelist}
+                                            onChange={handleScanSettingChange}
+                                        />
+                                        <div className="w-11 h-6 bg-[#1c1e30] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                                
+                                {scanSettings.enableWhitelist && (
+                                    <>
+                                        {/* Form for adding new device */}
+                                        <div className="bg-[#1c1e30] p-4 rounded-lg mb-4">
+                                            <h4 className="text-sm font-medium mb-3">เพิ่มอุปกรณ์ใน Whitelist</h4>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                                                <div>
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="ชื่ออุปกรณ์" 
+                                                        className="w-full bg-[#232539] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        name="name"
+                                                        value={newDevice.name}
+                                                        onChange={handleNewDeviceChange}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="IP Address (เช่น 192.168.1.1)" 
+                                                        className="w-full bg-[#232539] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        name="ip"
+                                                        value={newDevice.ip}
+                                                        onChange={handleNewDeviceChange}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="MAC Address (เช่น 00:11:22:33:44:55)" 
+                                                        className="w-full bg-[#232539] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        name="mac"
+                                                        value={newDevice.mac}
+                                                        onChange={handleNewDeviceChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="flex justify-end">
+                                                <button 
+                                                    className="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                                                    onClick={addDeviceToWhitelist}
+                                                >
+                                                    เพิ่มอุปกรณ์
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* List of whitelisted devices */}
+                                        <div className="bg-[#1c1e30] p-4 rounded-lg">
+                                            <h4 className="text-sm font-medium mb-3">รายการอุปกรณ์ที่อยู่ใน Whitelist</h4>
+                                            
+                                            {whitelistDevices.length === 0 ? (
+                                                <p className="text-sm text-gray-400 text-center py-4">ไม่มีอุปกรณ์ใน Whitelist</p>
+                                            ) : (
+                                                <div className="overflow-x-auto">
+                                                    <table className="w-full">
+                                                        <thead>
+                                                            <tr className="text-left text-sm text-gray-400 border-b border-[#2a2d43]">
+                                                                <th className="pb-2">ชื่ออุปกรณ์</th>
+                                                                <th className="pb-2">IP Address</th>
+                                                                <th className="pb-2">MAC Address</th>
+                                                                <th className="pb-2"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {whitelistDevices.map(device => (
+                                                                <tr key={device.id} className="border-b border-[#2a2d43]">
+                                                                    <td className="py-3">{device.name}</td>
+                                                                    <td className="py-3">{device.ip}</td>
+                                                                    <td className="py-3">{device.mac}</td>
+                                                                    <td className="py-3 text-right">
+                                                                        <button 
+                                                                            className="text-red-500 hover:text-red-400"
+                                                                            onClick={() => removeDeviceFromWhitelist(device.id)}
+                                                                        >
+                                                                            ลบ
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            )}
+                                            
+                                            <div className="mt-3 text-xs text-gray-400">
+                                                <p>อุปกรณ์ที่อยู่ใน Whitelist จะไม่ถูกสแกนและไม่แสดงในรายงานความปลอดภัย</p>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     )}
