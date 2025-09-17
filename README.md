@@ -169,3 +169,4 @@ iot-security-scanner/
 โปรเจกต์นี้พัฒนาด้วย [Next.js](https://nextjs.org/) และ [Tailwind CSS](https://tailwindcss.com/) เริ่มต้นจาก [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app)
 
 📄 [MIT License](./LICENSE) - รายละเอียดลิขสิทธิ์
+# WIFI-Cameradetection
