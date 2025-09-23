@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
     try {
-        // จำลองการแสกน
+        // Simulate scan
         const devices = [
             {
                 name: "Smart CCTV",

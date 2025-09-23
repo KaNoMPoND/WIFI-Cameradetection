@@ -11,7 +11,7 @@ interface WhitelistDevice {
 }
 
 export default function Settings() {
-    // ตั้งค่าการแสกน
+    // Scan settings
     const [scanSettings, setScanSettings] = useState({
         autoScan: true,
         scanFrequency: 'daily',
@@ -21,7 +21,7 @@ export default function Settings() {
         enableWhitelist: false
     });
     
-    // ตั้งค่าการแจ้งเตือน
+    // Notification settings
     const [notificationSettings, setNotificationSettings] = useState({
         emailNotifications: true,
         email: 'user@example.com',
@@ -31,20 +31,20 @@ export default function Settings() {
         notifyOnLowRisk: false
     });
     
-    // ตั้งค่าความเป็นส่วนตัว
+    // Privacy settings
     const [privacySettings, setPrivacySettings] = useState({
         collectAnonymousData: true,
         shareStatistics: false,
-        storeHistory: 30 // จำนวนวันที่จะเก็บประวัติ
+        storeHistory: 30 // Number of days to keep history
     });
     
-    // อุปกรณ์ใน whitelist
+    // Whitelist devices
     const [whitelistDevices, setWhitelistDevices] = useState<WhitelistDevice[]>([
         { id: '1', name: 'Router Admin', ip: '192.168.1.1', mac: '00:11:22:33:44:55' },
         { id: '2', name: 'Smart TV', ip: '192.168.1.15', mac: 'AA:BB:CC:DD:EE:FF' }
     ]);
     
-    // สำหรับเพิ่มอุปกรณ์ใหม่ใน whitelist
+    // For adding new devices to whitelist
     const [newDevice, setNewDevice] = useState<Omit<WhitelistDevice, 'id'>>({
         name: '',
         ip: '',
@@ -92,19 +92,19 @@ export default function Settings() {
     };
     
     const addDeviceToWhitelist = () => {
-        // ตรวจสอบว่ากรอกข้อมูลครบหรือไม่
+        // Check if all fields are filled
         if (!newDevice.name || !newDevice.ip || !newDevice.mac) {
-            alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+            alert('Please fill in all fields');
             return;
         }
         
-        // สร้าง ID ใหม่
+        // Create new ID
         const id = (whitelistDevices.length + 1).toString();
         
-        // เพิ่มอุปกรณ์ใหม่เข้า whitelist
+        // Add new device to whitelist
         setWhitelistDevices(prev => [...prev, { ...newDevice, id }]);
         
-        // รีเซ็ตฟอร์ม
+        // Reset form
         setNewDevice({ name: '', ip: '', mac: '' });
     };
     
@@ -113,7 +113,7 @@ export default function Settings() {
     };
     
     const handleSaveSettings = () => {
-        // จำลองการบันทึกการตั้งค่า
+        // Simulate saving settings
         setSaveSuccess(true);
         
         setTimeout(() => {
@@ -127,11 +127,11 @@ export default function Settings() {
             
             <div className="max-w-4xl mx-auto pt-24 px-4 pb-12">
                 <div className="bg-[rgba(35,37,57,0.95)] rounded-3xl p-8 mb-8">
-                    <h1 className="text-2xl font-bold mb-6">การตั้งค่า</h1>
+                    <h1 className="text-2xl font-bold mb-6">Settings</h1>
                     
                     {saveSuccess && (
                         <div className="mb-6 bg-green-500/20 border border-green-500 text-green-300 px-4 py-3 rounded">
-                            บันทึกการตั้งค่าเรียบร้อยแล้ว
+                            Settings saved successfully
                         </div>
                     )}
                     
@@ -140,19 +140,19 @@ export default function Settings() {
                             className={`px-4 py-2 border-b-2 ${activeTab === 'scan' ? 'border-blue-500 text-white' : 'border-transparent text-gray-400'}`}
                             onClick={() => setActiveTab('scan')}
                         >
-                            การแสกน
+                            Scanning
                         </button>
                         <button 
                             className={`px-4 py-2 border-b-2 ${activeTab === 'notification' ? 'border-blue-500 text-white' : 'border-transparent text-gray-400'}`}
                             onClick={() => setActiveTab('notification')}
                         >
-                            การแจ้งเตือน
+                            Notifications
                         </button>
                         <button 
                             className={`px-4 py-2 border-b-2 ${activeTab === 'privacy' ? 'border-blue-500 text-white' : 'border-transparent text-gray-400'}`}
                             onClick={() => setActiveTab('privacy')}
                         >
-                            ความเป็นส่วนตัว
+                            Privacy
                         </button>
                     </div>
                     
@@ -160,8 +160,8 @@ export default function Settings() {
                         <div className="space-y-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h3 className="font-medium">แสกนอัตโนมัติ</h3>
-                                    <p className="text-sm text-gray-400">ทำการแสกนอุปกรณ์ตามกำหนดเวลา</p>
+                                    <h3 className="font-medium">Auto Scan</h3>
+                                    <p className="text-sm text-gray-400">Automatically scan devices on schedule</p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input 
@@ -177,7 +177,7 @@ export default function Settings() {
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">ความถี่ในการแสกน</label>
+                                    <label className="block text-sm font-medium mb-2">Scan Frequency</label>
                                     <select 
                                         className="w-full bg-[#1c1e30] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         name="scanFrequency"
@@ -185,15 +185,15 @@ export default function Settings() {
                                         onChange={handleScanSettingChange}
                                         disabled={!scanSettings.autoScan}
                                     >
-                                        <option value="hourly">ทุกชั่วโมง</option>
-                                        <option value="daily">ทุกวัน</option>
-                                        <option value="weekly">ทุกสัปดาห์</option>
-                                        <option value="monthly">ทุกเดือน</option>
+                                        <option value="hourly">Every Hour</option>
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
                                     </select>
                                 </div>
                                 
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">เวลาที่ทำการแสกน</label>
+                                    <label className="block text-sm font-medium mb-2">Scan Time</label>
                                     <input 
                                         type="time" 
                                         className="w-full bg-[#1c1e30] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -215,7 +215,7 @@ export default function Settings() {
                                     onChange={handleScanSettingChange}
                                 />
                                 <label htmlFor="notifyOnComplete" className="text-sm font-medium">
-                                    แจ้งเตือนเมื่อการแสกนเสร็จสิ้น
+                                    Notify when scan is completed
                                 </label>
                             </div>
                             
@@ -229,7 +229,7 @@ export default function Settings() {
                                     onChange={handleScanSettingChange}
                                 />
                                 <label htmlFor="scanDeepInspection" className="text-sm font-medium">
-                                    แสกนแบบละเอียด (ใช้เวลานานขึ้น)
+                                    Deep scan (takes longer)
                                 </label>
                             </div>
                             
@@ -237,8 +237,8 @@ export default function Settings() {
                             <div className="mt-8 pt-6 border-t border-[#2a2d43]">
                                 <div className="flex items-center justify-between mb-4">
                                     <div>
-                                        <h3 className="font-medium">Whitelist อุปกรณ์</h3>
-                                        <p className="text-sm text-gray-400">กำหนดรายการอุปกรณ์ที่ต้องการยกเว้นจากการสแกน</p>
+                                        <h3 className="font-medium">Device Whitelist</h3>
+                                        <p className="text-sm text-gray-400">Define devices to exclude from scanning</p>
                                     </div>
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input 
@@ -256,12 +256,12 @@ export default function Settings() {
                                     <>
                                         {/* Form for adding new device */}
                                         <div className="bg-[#1c1e30] p-4 rounded-lg mb-4">
-                                            <h4 className="text-sm font-medium mb-3">เพิ่มอุปกรณ์ใน Whitelist</h4>
+                                            <h4 className="text-sm font-medium mb-3">Add Device to Whitelist</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
                                                 <div>
                                                     <input 
                                                         type="text" 
-                                                        placeholder="ชื่ออุปกรณ์" 
+                                                        placeholder="Device Name" 
                                                         className="w-full bg-[#232539] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                         name="name"
                                                         value={newDevice.name}
@@ -271,7 +271,7 @@ export default function Settings() {
                                                 <div>
                                                     <input 
                                                         type="text" 
-                                                        placeholder="IP Address (เช่น 192.168.1.1)" 
+                                                        placeholder="IP Address (e.g. 192.168.1.1)" 
                                                         className="w-full bg-[#232539] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                         name="ip"
                                                         value={newDevice.ip}
@@ -281,7 +281,7 @@ export default function Settings() {
                                                 <div>
                                                     <input 
                                                         type="text" 
-                                                        placeholder="MAC Address (เช่น 00:11:22:33:44:55)" 
+                                                        placeholder="MAC Address (e.g. 00:11:22:33:44:55)" 
                                                         className="w-full bg-[#232539] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                         name="mac"
                                                         value={newDevice.mac}
@@ -294,23 +294,23 @@ export default function Settings() {
                                                     className="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
                                                     onClick={addDeviceToWhitelist}
                                                 >
-                                                    เพิ่มอุปกรณ์
+                                                    Add Device
                                                 </button>
                                             </div>
                                         </div>
                                         
                                         {/* List of whitelisted devices */}
                                         <div className="bg-[#1c1e30] p-4 rounded-lg">
-                                            <h4 className="text-sm font-medium mb-3">รายการอุปกรณ์ที่อยู่ใน Whitelist</h4>
+                                            <h4 className="text-sm font-medium mb-3">Whitelisted Devices</h4>
                                             
                                             {whitelistDevices.length === 0 ? (
-                                                <p className="text-sm text-gray-400 text-center py-4">ไม่มีอุปกรณ์ใน Whitelist</p>
+                                                <p className="text-sm text-gray-400 text-center py-4">No devices in Whitelist</p>
                                             ) : (
                                                 <div className="overflow-x-auto">
                                                     <table className="w-full">
                                                         <thead>
                                                             <tr className="text-left text-sm text-gray-400 border-b border-[#2a2d43]">
-                                                                <th className="pb-2">ชื่ออุปกรณ์</th>
+                                                                <th className="pb-2">Device Name</th>
                                                                 <th className="pb-2">IP Address</th>
                                                                 <th className="pb-2">MAC Address</th>
                                                                 <th className="pb-2"></th>
@@ -327,7 +327,7 @@ export default function Settings() {
                                                                             className="text-red-500 hover:text-red-400"
                                                                             onClick={() => removeDeviceFromWhitelist(device.id)}
                                                                         >
-                                                                            ลบ
+                                                                            Delete
                                                                         </button>
                                                                     </td>
                                                                 </tr>
@@ -338,7 +338,7 @@ export default function Settings() {
                                             )}
                                             
                                             <div className="mt-3 text-xs text-gray-400">
-                                                <p>อุปกรณ์ที่อยู่ใน Whitelist จะไม่ถูกสแกนและไม่แสดงในรายงานความปลอดภัย</p>
+                                                <p>Whitelisted devices will not be scanned and will not appear in security reports</p>
                                             </div>
                                         </div>
                                     </>
@@ -351,8 +351,8 @@ export default function Settings() {
                         <div className="space-y-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h3 className="font-medium">การแจ้งเตือนทางอีเมล</h3>
-                                    <p className="text-sm text-gray-400">ส่งการแจ้งเตือนไปยังอีเมลของคุณ</p>
+                                    <h3 className="font-medium">Email Notifications</h3>
+                                    <p className="text-sm text-gray-400">Send notifications to your email</p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input 
@@ -367,7 +367,7 @@ export default function Settings() {
                             </div>
                             
                             <div>
-                                <label className="block text-sm font-medium mb-2">อีเมลของคุณ</label>
+                                <label className="block text-sm font-medium mb-2">Your Email</label>
                                 <input 
                                     type="email" 
                                     className="w-full bg-[#1c1e30] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -380,8 +380,8 @@ export default function Settings() {
                             
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h3 className="font-medium">การแจ้งเตือนแบบ Push</h3>
-                                    <p className="text-sm text-gray-400">รับการแจ้งเตือนผ่านทางเบราว์เซอร์</p>
+                                    <h3 className="font-medium">Push Notifications</h3>
+                                    <p className="text-sm text-gray-400">Receive notifications through browser</p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input 
@@ -396,7 +396,7 @@ export default function Settings() {
                             </div>
                             
                             <div className="pt-4 border-t border-[#2a2d43]">
-                                <h3 className="font-medium mb-3">ระดับความเสี่ยงที่ต้องการรับการแจ้งเตือน</h3>
+                                <h3 className="font-medium mb-3">Risk Level Notifications</h3>
                                 
                                 <div className="space-y-2">
                                     <div className="flex items-center space-x-2">
@@ -409,7 +409,7 @@ export default function Settings() {
                                             onChange={handleNotificationSettingChange}
                                         />
                                         <label htmlFor="notifyOnHighRisk" className="text-sm font-medium">
-                                            ความเสี่ยงสูง
+                                            High Risk
                                         </label>
                                     </div>
                                     
@@ -423,7 +423,7 @@ export default function Settings() {
                                             onChange={handleNotificationSettingChange}
                                         />
                                         <label htmlFor="notifyOnMediumRisk" className="text-sm font-medium">
-                                            ความเสี่ยงปานกลาง
+                                            Medium Risk
                                         </label>
                                     </div>
                                     
@@ -437,7 +437,7 @@ export default function Settings() {
                                             onChange={handleNotificationSettingChange}
                                         />
                                         <label htmlFor="notifyOnLowRisk" className="text-sm font-medium">
-                                            ความเสี่ยงต่ำ
+                                            Low Risk
                                         </label>
                                     </div>
                                 </div>
@@ -449,8 +449,8 @@ export default function Settings() {
                         <div className="space-y-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h3 className="font-medium">เก็บข้อมูลแบบไม่ระบุตัวตน</h3>
-                                    <p className="text-sm text-gray-400">ช่วยปรับปรุงซอฟต์แวร์ด้วยข้อมูลการใช้งานแบบไม่ระบุตัวตน</p>
+                                    <h3 className="font-medium">Collect Anonymous Data</h3>
+                                    <p className="text-sm text-gray-400">Help improve software with anonymous usage data</p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input 
@@ -466,8 +466,8 @@ export default function Settings() {
                             
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h3 className="font-medium">แบ่งปันสถิติ</h3>
-                                    <p className="text-sm text-gray-400">แบ่งปันสถิติช่องโหว่เพื่อช่วยปรับปรุงความปลอดภัยทั่วโลก</p>
+                                    <h3 className="font-medium">Share Statistics</h3>
+                                    <p className="text-sm text-gray-400">Share vulnerability statistics to help improve global security</p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input 
@@ -482,18 +482,18 @@ export default function Settings() {
                             </div>
                             
                             <div>
-                                <label className="block text-sm font-medium mb-2">เก็บประวัติการแสกนไว้นานเท่าไร</label>
+                                <label className="block text-sm font-medium mb-2">How long to keep scan history</label>
                                 <select 
                                     className="w-full bg-[#1c1e30] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     name="storeHistory"
                                     value={privacySettings.storeHistory.toString()}
                                     onChange={handlePrivacySettingChange}
                                 >
-                                    <option value="7">7 วัน</option>
-                                    <option value="14">14 วัน</option>
-                                    <option value="30">30 วัน</option>
-                                    <option value="90">90 วัน</option>
-                                    <option value="365">1 ปี</option>
+                                    <option value="7">7 days</option>
+                                    <option value="14">14 days</option>
+                                    <option value="30">30 days</option>
+                                    <option value="90">90 days</option>
+                                    <option value="365">1 year</option>
                                 </select>
                             </div>
                             
@@ -501,10 +501,10 @@ export default function Settings() {
                                 <button 
                                     className="bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
                                 >
-                                    ลบข้อมูลทั้งหมด
+                                    Delete All Data
                                 </button>
                                 <p className="text-xs text-gray-400 mt-2">
-                                    การลบข้อมูลจะลบประวัติการแสกนและการตั้งค่าทั้งหมด และไม่สามารถกู้คืนได้
+                                    Deleting data will remove all scan history and settings, and cannot be recovered
                                 </p>
                             </div>
                         </div>
@@ -515,7 +515,7 @@ export default function Settings() {
                             className="bg-blue-600 px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                             onClick={handleSaveSettings}
                         >
-                            บันทึกการตั้งค่า
+                            Save Settings
                         </button>
                     </div>
                 </div>

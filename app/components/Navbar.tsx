@@ -8,20 +8,11 @@ export default function Navbar() {
     const pathname = usePathname();
     const [menuOpen, setMenuOpen] = useState(false);
     
-    // ตรวจสอบว่าเป็นหน้า auth หรือไม่
-    const isAuthPage = pathname === '/login' || pathname === '/register';
-    
-    // ถ้าเป็นหน้า auth ไม่ต้องแสดง Navbar
-    if (isAuthPage) {
-        return null;
-    }
-    
     const navLinks = [
-        { title: 'หน้าหลัก', path: '/' },
-        { title: 'ประวัติการแสกน', path: '/scan-history' },
-        { title: 'รายงาน', path: '/report' },
-        { title: 'ตั้งค่า', path: '/settings' },
-        { title: 'เข้าสู่ระบบ', path: '/login' },
+        { title: 'Home', path: '/' },
+        { title: 'Scan History', path: '/scan-history' },
+        { title: 'Reports', path: '/report' },
+        { title: 'Settings', path: '/settings' },
     ];
 
     const isActive = (path: string) => {

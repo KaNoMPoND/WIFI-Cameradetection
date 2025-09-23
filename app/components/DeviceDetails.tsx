@@ -30,10 +30,10 @@ export default function DeviceDetails() {
 
   const getRiskLabel = (risk: string) => {
     switch(risk) {
-      case 'high': return 'เสี่ยงสูง';
-      case 'medium': return 'เสี่ยงปานกลาง';
-      case 'low': return 'เสี่ยงต่ำ';
-      default: return 'ปลอดภัย';
+      case 'high': return 'High Risk';
+      case 'medium': return 'Medium Risk';
+      case 'low': return 'Low Risk';
+      default: return 'Safe';
     }
   };
 
@@ -52,10 +52,10 @@ export default function DeviceDetails() {
   
   const getSeverityLabel = (severity: string) => {
     switch(severity) {
-      case 'high': return 'สูง';
-      case 'medium': return 'กลาง';
-      case 'low': return 'ต่ำ';
-      default: return 'ไม่ระบุ';
+      case 'high': return 'High';
+      case 'medium': return 'Medium';
+      case 'low': return 'Low';
+      default: return 'Unknown';
     }
   };
 
@@ -79,11 +79,11 @@ export default function DeviceDetails() {
         <div className="overflow-y-auto p-6 flex-grow">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div className="bg-[#232539] p-4 rounded-lg">
-              <h3 className="text-gray-400 text-sm mb-3">ข้อมูลอุปกรณ์</h3>
+              <h3 className="text-gray-400 text-sm mb-3">Device Information</h3>
               
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">ประเภท</span>
+                  <span className="text-gray-400">Type</span>
                   <span>{selectedDevice.type}</span>
                 </div>
                 <div className="flex justify-between">
@@ -96,31 +96,31 @@ export default function DeviceDetails() {
                 </div>
                 {selectedDevice.manufacturer && (
                   <div className="flex justify-between">
-                    <span className="text-gray-400">ผู้ผลิต</span>
+                    <span className="text-gray-400">Manufacturer</span>
                     <span>{selectedDevice.manufacturer}</span>
                   </div>
                 )}
                 {selectedDevice.model && (
                   <div className="flex justify-between">
-                    <span className="text-gray-400">รุ่น</span>
+                    <span className="text-gray-400">Model</span>
                     <span>{selectedDevice.model}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-gray-400">สถานะ</span>
+                  <span className="text-gray-400">Status</span>
                   <span className={selectedDevice.isOnline ? "text-green-400" : "text-red-400"}>
-                    {selectedDevice.isOnline ? "ออนไลน์" : "ออฟไลน์"}
+                    {selectedDevice.isOnline ? "Online" : "Offline"}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">ระดับความเสี่ยง</span>
+                  <span className="text-gray-400">Risk Level</span>
                   <span className={`px-2 py-0.5 rounded-full text-xs ${getRiskBadgeClass(selectedDevice.risk)}`}>
                     {getRiskLabel(selectedDevice.risk)}
                   </span>
                 </div>
                 {selectedDevice.lastScan && (
                   <div className="flex justify-between">
-                    <span className="text-gray-400">สแกนล่าสุด</span>
+                    <span className="text-gray-400">Last Scan</span>
                     <span>{selectedDevice.lastScan}</span>
                   </div>
                 )}
@@ -128,7 +128,7 @@ export default function DeviceDetails() {
             </div>
             
             <div className="bg-[#232539] p-4 rounded-lg">
-              <h3 className="text-gray-400 text-sm mb-3">สรุปความเสี่ยง</h3>
+              <h3 className="text-gray-400 text-sm mb-3">Risk Summary</h3>
               
               <div className="flex items-center mb-3">
                 <div className={`text-4xl font-bold ${
@@ -139,11 +139,11 @@ export default function DeviceDetails() {
                   {selectedDevice.vulnerabilities.length}
                 </div>
                 <div className="ml-3">
-                  <div className="font-medium">ช่องโหว่ที่ตรวจพบ</div>
+                  <div className="font-medium">Vulnerabilities Found</div>
                   <div className="text-sm text-gray-400">
-                    {selectedDevice.vulnerabilities.filter(v => v.severity === 'high').length} ความเสี่ยงสูง, {' '}
-                    {selectedDevice.vulnerabilities.filter(v => v.severity === 'medium').length} ความเสี่ยงกลาง, {' '}
-                    {selectedDevice.vulnerabilities.filter(v => v.severity === 'low').length} ความเสี่ยงต่ำ
+                    {selectedDevice.vulnerabilities.filter(v => v.severity === 'high').length} High Risk, {' '}
+                    {selectedDevice.vulnerabilities.filter(v => v.severity === 'medium').length} Medium Risk, {' '}
+                    {selectedDevice.vulnerabilities.filter(v => v.severity === 'low').length} Low Risk
                   </div>
                 </div>
               </div>
@@ -153,18 +153,18 @@ export default function DeviceDetails() {
                   className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition-colors mt-4"
                   onClick={handleAttack}
                 >
-                  ทดสอบการโจมตี
+                  Scan Vulnerabilities
                 </button>
               )}
             </div>
           </div>
           
           <div className="bg-[#232539] p-4 rounded-lg mb-6">
-            <h3 className="text-gray-400 text-sm mb-4">ช่องโหว่ที่ตรวจพบ</h3>
+            <h3 className="text-gray-400 text-sm mb-4">Detected Vulnerabilities</h3>
             
             {selectedDevice.vulnerabilities.length === 0 ? (
               <div className="text-center py-4 text-gray-400">
-                ไม่พบช่องโหว่ในอุปกรณ์นี้
+                No vulnerabilities found in this device
               </div>
             ) : (
               <div className="space-y-4">
@@ -180,7 +180,7 @@ export default function DeviceDetails() {
                       {vuln.description}
                     </div>
                     <div>
-                      <div className="text-sm font-medium text-green-500 mb-1">วิธีแก้ไข</div>
+                      <div className="text-sm font-medium text-green-500 mb-1">Solution</div>
                       <div className="text-sm">{vuln.solution}</div>
                     </div>
                   </div>
@@ -190,29 +190,29 @@ export default function DeviceDetails() {
           </div>
           
           <div className="bg-[#232539] p-4 rounded-lg">
-            <h3 className="text-gray-400 text-sm mb-4">คำแนะนำเพิ่มเติม</h3>
+            <h3 className="text-gray-400 text-sm mb-4">Additional Recommendations</h3>
             
             <div className="space-y-2 text-sm">
               {selectedDevice.risk === 'high' && (
                 <div className="text-red-400">
-                  ⚠️ อุปกรณ์นี้มีความเสี่ยงสูง ควรแก้ไขปัญหาโดยเร่งด่วน
+                  ⚠️ This device has high risk and should be fixed urgently
                 </div>
               )}
               
               <div>
-                👉 ตรวจสอบการอัปเดตเฟิร์มแวร์จากผู้ผลิตอยู่เสมอ
+                👉 Check for firmware updates from manufacturer regularly
               </div>
               
               <div>
-                👉 เปลี่ยนรหัสผ่านเริ่มต้นและใช้รหัสผ่านที่ซับซ้อน
+                👉 Change default passwords and use complex passwords
               </div>
               
               <div>
-                👉 ปิดบริการและพอร์ตที่ไม่จำเป็น
+                👉 Disable unnecessary services and ports
               </div>
               
               <div>
-                👉 ตรวจสอบการตั้งค่าความปลอดภัยของอุปกรณ์อยู่เสมอ
+                👉 Regularly check device security settings
               </div>
             </div>
           </div>
@@ -223,14 +223,14 @@ export default function DeviceDetails() {
             className="px-4 py-2 bg-[#1a1b2e] hover:bg-[#232539] text-white rounded-lg transition-colors"
             onClick={handleClose}
           >
-            ปิด
+            Close
           </button>
           
           <button 
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             onClick={() => window.open(`/report?device=${selectedDevice.id}`, '_blank')}
           >
-            ดูรายงานฉบับเต็ม
+            View Full Report
           </button>
         </div>
       </div>

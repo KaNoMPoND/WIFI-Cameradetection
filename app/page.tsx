@@ -19,7 +19,11 @@ export default function Home() {
                 <div className="bg-[rgba(35,37,57,0.95)] rounded-3xl p-8 mb-8">
                     <div className="text-center mb-8">
                         <h1 className="text-3xl font-bold mb-2">IoT Security Scanner</h1>
-                        <p className="text-gray-400">ตรวจสอบความปลอดภัยของอุปกรณ์ IoT ในเครือข่ายของคุณ</p>
+                        <p className="text-gray-400">Scan and analyze security vulnerabilities in your IoT devices</p>
+                        <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-900/30 text-green-400 border border-green-500">
+                            <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                            IoT Device Detection Active
+                        </div>
                     </div>
                     
                     <div className="flex flex-col md:flex-row items-center">
@@ -36,18 +40,32 @@ export default function Home() {
                 {scanStats.scanProgress > 0 && (
                     <div className="mb-6">
                         <div className="flex justify-between text-sm text-[#8d8e98] mb-2">
-                            <span>เครือข่าย: {scanStats.networkName}</span>
-                            <span>อุปกรณ์ทั้งหมด: {scanStats.totalDevices}</span>
+                            <span>Network: {scanStats.networkName}</span>
+                            <span>Total Devices: {scanStats.totalDevices}</span>
                         </div>
                         
-                        {scanStats.scanProgress === 100 && devices.length > 0 && (
-                            <div className="mb-4">
-                                <h2 className="text-xl font-semibold mb-2">อุปกรณ์ที่พบในเครือข่าย</h2>
-                                <p className="text-[#8d8e98] text-sm">
-                                    พบอุปกรณ์ทั้งหมด {scanStats.totalDevices} รายการ, 
-                                    มีความเสี่ยง {scanStats.vulnerableDevices} รายการ
-                                </p>
+                        {/* Debug info */}
+                        {devices.length > 0 && (
+                            <div className="mb-4 p-3 bg-blue-900/20 border border-blue-500 rounded-lg">
+                                <div className="text-blue-300 text-sm">
+                                    ✅ Found devices in network: {devices.length} devices
+                                </div>
+                                {devices.map(device => (
+                                    <div key={device.id} className="text-xs text-blue-200 mt-1">
+                                        • {device.name} ({device.ip}) - {device.type}
+                                    </div>
+                                ))}
                             </div>
+                        )}
+                        
+                        {scanStats.scanProgress === 100 && devices.length > 0 && (
+                                <div className="mb-4">
+                                    <h2 className="text-xl font-semibold mb-2">Devices Found in Network</h2>
+                                    <p className="text-[#8d8e98] text-sm">
+                                        Found {scanStats.totalDevices} total devices,
+                                        {scanStats.vulnerableDevices} with vulnerabilities
+                                    </p>
+                                </div>
                         )}
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -61,15 +79,15 @@ export default function Home() {
                             
                             {devices.length === 0 && scanStats.scanProgress < 100 && (
                                 <div className="col-span-full bg-[#1a1b2e] p-6 rounded-xl text-center">
-                                    <p className="text-[#8d8e98]">กำลังค้นหาอุปกรณ์...</p>
+                                    <p className="text-[#8d8e98]">Searching for devices...</p>
                                 </div>
                             )}
                             
                             {devices.length === 0 && scanStats.scanProgress === 100 && (
                                 <div className="col-span-full bg-[#1a1b2e] p-6 rounded-xl text-center">
-                                    <p className="text-[#8d8e98]">ไม่พบอุปกรณ์ในเครือข่าย</p>
+                                    <p className="text-[#8d8e98]">No devices found in network</p>
                                     <p className="text-[#8d8e98] text-sm mt-2">
-                                        โปรดตรวจสอบการเชื่อมต่อเครือข่ายของคุณหรือลองสแกนอีกครั้ง
+                                        Please check your network connection or try scanning again
                                     </p>
                                 </div>
                             )}
@@ -79,31 +97,31 @@ export default function Home() {
                 
                 {scanStats.scanProgress === 0 && (
                     <div className="bg-[#1a1b2e] p-6 rounded-xl text-center">
-                        <h3 className="mb-4 text-xl">เริ่มต้นใช้งาน</h3>
+                        <h3 className="mb-4 text-xl">Getting Started</h3>
                         <p className="text-[#8d8e98] mb-4">
-                            กดปุ่ม "เริ่มการแสกน" เพื่อตรวจสอบอุปกรณ์ IoT ในเครือข่ายของคุณ 
-                            ระบบจะค้นหาอุปกรณ์และตรวจสอบช่องโหว่ด้านความปลอดภัยโดยอัตโนมัติ
+                            Click "Start Scan" to check IoT devices in your network. 
+                            The system will automatically find devices and check for security vulnerabilities.
                         </p>
                         <div className="flex flex-col md:flex-row gap-4 justify-center">
                             <div className="bg-[rgba(35,37,57,0.5)] p-4 rounded-lg flex-1 max-w-xs mx-auto">
                                 <div className="text-blue-400 text-3xl mb-2">1</div>
-                                <h4 className="font-medium mb-1">ค้นหาอุปกรณ์</h4>
+                                <h4 className="font-medium mb-1">Find Devices</h4>
                                 <p className="text-sm text-[#8d8e98]">
-                                    ค้นหาอุปกรณ์ IoT ทั้งหมดที่เชื่อมต่อกับเครือข่ายของคุณ
+                                    Find all IoT devices connected to your network
                                 </p>
                             </div>
                             <div className="bg-[rgba(35,37,57,0.5)] p-4 rounded-lg flex-1 max-w-xs mx-auto">
                                 <div className="text-yellow-400 text-3xl mb-2">2</div>
-                                <h4 className="font-medium mb-1">ตรวจสอบช่องโหว่</h4>
+                                <h4 className="font-medium mb-1">Check Vulnerabilities</h4>
                                 <p className="text-sm text-[#8d8e98]">
-                                    วิเคราะห์ช่องโหว่ด้านความปลอดภัยในอุปกรณ์แต่ละชิ้น
+                                    Analyze security vulnerabilities in each device
                                 </p>
                             </div>
                             <div className="bg-[rgba(35,37,57,0.5)] p-4 rounded-lg flex-1 max-w-xs mx-auto">
                                 <div className="text-green-400 text-3xl mb-2">3</div>
-                                <h4 className="font-medium mb-1">รับคำแนะนำ</h4>
+                                <h4 className="font-medium mb-1">Get Recommendations</h4>
                                 <p className="text-sm text-[#8d8e98]">
-                                    ดูรายงานพร้อมคำแนะนำในการแก้ไขปัญหาความปลอดภัย
+                                    View reports with recommendations for fixing security issues
                                 </p>
                             </div>
                         </div>

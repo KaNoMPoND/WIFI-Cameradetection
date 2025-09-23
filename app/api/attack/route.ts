@@ -4,7 +4,7 @@ export async function POST(req: Request) {
     try {
         const { deviceIP } = await req.json();
 
-        // จำลองการโจมตี
+        // Simulate attack
         const result = {
             success: true,
             target: deviceIP,
