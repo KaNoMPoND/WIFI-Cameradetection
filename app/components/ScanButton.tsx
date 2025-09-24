@@ -26,7 +26,7 @@ export default function ScanButton() {
                 disabled={scanning}
             >
                 <div className="absolute inset-0 flex items-center justify-center z-10">
-                    {scanning ? `${progress}%` : 'เริ่มการแสกน'}
+                    {scanning ? `${progress}%` : 'Start Scan'}
                 </div>
                 
                 {scanning && (
@@ -47,7 +47,7 @@ export default function ScanButton() {
                     onClick={cancelScan}
                     className="mt-4 px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
                 >
-                    ยกเลิกการแสกน
+                    Cancel Scan
                 </button>
             )}
             
@@ -56,7 +56,7 @@ export default function ScanButton() {
                     onClick={startScan}
                     className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
                 >
-                    แสกนอีกครั้ง
+                    Scan Again
                 </button>
             )}
         </div>

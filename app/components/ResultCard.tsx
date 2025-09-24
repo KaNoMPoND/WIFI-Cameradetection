@@ -17,7 +17,7 @@ export default function ResultCard({
     const { devices, attackDevice, setSelectedDevice } = useScan();
     const [expanded, setExpanded] = useState(false);
     
-    // หาอุปกรณ์จาก ID
+    // Find device by ID
     const device = devices.find(d => d.id === deviceId);
     
     if (!device) return null;
@@ -47,10 +47,10 @@ export default function ResultCard({
     
     const getRiskLabel = () => {
         switch(risk) {
-            case 'high': return 'เสี่ยงสูง';
-            case 'medium': return 'เสี่ยงปานกลาง';
-            case 'low': return 'เสี่ยงต่ำ';
-            default: return 'ปลอดภัย';
+            case 'high': return 'High Risk';
+            case 'medium': return 'Medium Risk';
+            case 'low': return 'Low Risk';
+            default: return 'Safe';
         }
     };
     
@@ -78,19 +78,19 @@ export default function ResultCard({
                     </div>
                     {manufacturer && (
                         <div className="flex justify-between">
-                            <span>ผู้ผลิต:</span>
+                            <span>Manufacturer:</span>
                             <span className="text-white">{manufacturer}</span>
                         </div>
                     )}
                     {model && (
                         <div className="flex justify-between">
-                            <span>รุ่น:</span>
+                            <span>Model:</span>
                             <span className="text-white">{model}</span>
                         </div>
                     )}
                     <div className="flex justify-between">
-                        <span>ช่องโหว่:</span>
-                        <span className="text-white">{vulnerabilities.length} รายการ</span>
+                        <span>Vulnerabilities:</span>
+                        <span className="text-white">{vulnerabilities.length} items</span>
                     </div>
                 </div>
                 
@@ -99,7 +99,7 @@ export default function ResultCard({
                         className="flex-1 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
                         onClick={handleViewDetails}
                     >
-                        ดูรายละเอียด
+                        View Details
                     </button>
                     
                     {risk !== 'safe' && (
@@ -107,7 +107,7 @@ export default function ResultCard({
                             className="flex-1 bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm"
                             onClick={handleAttack}
                         >
-                            ทดสอบการโจมตี
+                            Scan Vulnerabilities
                         </button>
                     )}
                     
@@ -116,7 +116,7 @@ export default function ResultCard({
                             className="flex-1 bg-[#232539] text-white px-3 py-2 rounded-lg hover:bg-[#2a2d43] transition-colors text-sm"
                             onClick={() => setExpanded(!expanded)}
                         >
-                            {expanded ? 'ซ่อนรายละเอียด' : 'แสดงช่องโหว่'}
+                            {expanded ? 'Hide Details' : 'Show Vulnerabilities'}
                         </button>
                     )}
                 </div>
@@ -134,15 +134,15 @@ export default function ResultCard({
                                                 vuln.severity === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
                                                 'bg-blue-500/20 text-blue-400'
                                             }`}>
-                                                {vuln.severity === 'high' ? 'สูง' : 
-                                                 vuln.severity === 'medium' ? 'กลาง' : 'ต่ำ'}
+                                                {vuln.severity === 'high' ? 'High' : 
+                                                 vuln.severity === 'medium' ? 'Medium' : 'Low'}
                                             </span>
                                         </div>
                                         <div className="text-sm text-[#8d8e98] mt-1">
                                             {vuln.description}
                                         </div>
                                         <div className="text-sm mt-2">
-                                            <span className="text-green-400 font-medium">วิธีแก้ไข:</span> {vuln.solution}
+                                            <span className="text-green-400 font-medium">Solution:</span> {vuln.solution}
                                         </div>
                                     </div>
                                 ))}

@@ -43,7 +43,7 @@ interface ScanContextType {
   cancelScan: () => void;
 }
 
-// ข้อมูลอุปกรณ์จำลอง
+// Mock device data
 const mockDevices: Device[] = [
   {
     id: '1',
@@ -57,16 +57,16 @@ const mockDevices: Device[] = [
       {
         id: 'v1',
         name: 'Default Password',
-        description: 'อุปกรณ์นี้ใช้รหัสผ่านเริ่มต้นจากโรงงาน ทำให้ผู้ไม่หวังดีสามารถเข้าถึงได้ง่าย',
+        description: 'This device uses default factory password, making it easy for attackers to access',
         severity: 'high',
-        solution: 'เปลี่ยนรหัสผ่านเริ่มต้นเป็นรหัสผ่านที่ซับซ้อน'
+        solution: 'Change default password to a complex one'
       },
       {
         id: 'v2',
         name: 'Outdated Firmware',
-        description: 'เฟิร์มแวร์ปัจจุบันมีช่องโหว่ด้านความปลอดภัยที่รู้จักกัน',
+        description: 'Current firmware has known security vulnerabilities',
         severity: 'medium',
-        solution: 'อัปเดตเฟิร์มแวร์เป็นเวอร์ชันล่าสุด'
+        solution: 'Update firmware to the latest version'
       }
     ]
   },
@@ -82,9 +82,9 @@ const mockDevices: Device[] = [
       {
         id: 'v3',
         name: 'Unencrypted Stream',
-        description: 'กล้องส่งวิดีโอสตรีมโดยไม่มีการเข้ารหัส',
+        description: 'Camera sends video stream without encryption',
         severity: 'medium',
-        solution: 'เปิดใช้งานการเข้ารหัส HTTPS/TLS ในการตั้งค่ากล้อง'
+        solution: 'Enable HTTPS/TLS encryption in camera settings'
       }
     ]
   },
@@ -100,9 +100,9 @@ const mockDevices: Device[] = [
       {
         id: 'v4',
         name: 'Unnecessary Open Ports',
-        description: 'พบพอร์ตที่ไม่จำเป็นเปิดอยู่ซึ่งอาจถูกใช้เป็นช่องทางโจมตี',
+        description: 'Found unnecessary open ports that could be used as attack vectors',
         severity: 'low',
-        solution: 'ปิดพอร์ตที่ไม่จำเป็นในการตั้งค่าอุปกรณ์'
+        solution: 'Close unnecessary ports in device settings'
       }
     ]
   },
@@ -128,9 +128,9 @@ const mockDevices: Device[] = [
       {
         id: 'v5',
         name: 'Unencrypted Communication',
-        description: 'อุปกรณ์ส่งข้อมูลโดยไม่มีการเข้ารหัส ทำให้ข้อมูลอาจถูกดักจับได้',
+        description: 'Device sends data without encryption, making it possible for data to be intercepted',
         severity: 'high',
-        solution: 'เปิดใช้งานการเข้ารหัสในการตั้งค่าอุปกรณ์ หรือติดต่อผู้ผลิตเพื่อขอการอัพเดท'
+        solution: 'Enable encryption in device settings or contact manufacturer for updates'
       }
     ]
   }
@@ -173,44 +173,53 @@ export function ScanProvider({ children }: { children: React.ReactNode }) {
   };
 
   const startScan = async () => {
-    // รีเซ็ตค่าเริ่มต้น
+    // Reset initial values
     setScanning(true);
     setScanProgress(0);
     setDevices([]);
     setScanStats(prev => ({...prev, scanProgress: 0}));
     
-    let isCancelled = false;
-    
-    // จำลองการแสกนอุปกรณ์ทีละชิ้น
-    for (let i = 10; i <= 100; i += 10) {
-      if (isCancelled) break;
+    try {
+      // Start mock scan
+      console.log('Starting mock scan...');
       
-      // จำลองการแสกน
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Simulate progress while scanning
+      const progressInterval = setInterval(() => {
+        setScanProgress(prev => {
+          if (prev < 90) return prev + 10;
+          return prev;
+        });
+      }, 1000);
       
-      // อัพเดทความคืบหน้า
-      setScanProgress(i);
-      setScanStats(prev => ({...prev, scanProgress: i}));
+      // Use mock data instead of real WiFi scan
+      throw new Error('Using mock data');
       
-      // เพิ่มอุปกรณ์ตามความคืบหน้า
-      if (i === 20) {
-        setDevices([mockDevices[0]]);
-      } else if (i === 40) {
-        setDevices([mockDevices[0], mockDevices[1]]);
-      } else if (i === 60) {
-        setDevices([mockDevices[0], mockDevices[1], mockDevices[2]]);
-      } else if (i === 80) {
-        setDevices([mockDevices[0], mockDevices[1], mockDevices[2], mockDevices[3]]);
-      } else if (i === 100) {
-        // เมื่อสแกนเสร็จสิ้น แสดงอุปกรณ์ทั้งหมด
-        setDevices(mockDevices);
-        // อัพเดทสถิติการสแกน
-        updateScanStats(mockDevices);
+      clearInterval(progressInterval);
+      
+    } catch (error) {
+      console.log('Using mock data for demonstration...');
+      
+      // Use mock data as fallback
+      for (let i = 10; i <= 100; i += 10) {
+        await new Promise(resolve => setTimeout(resolve, 200));
+        setScanProgress(i);
+        
+        if (i === 20) {
+          setDevices([mockDevices[0]]);
+        } else if (i === 40) {
+          setDevices([mockDevices[0], mockDevices[1]]);
+        } else if (i === 60) {
+          setDevices([mockDevices[0], mockDevices[1], mockDevices[2]]);
+        } else if (i === 80) {
+          setDevices([mockDevices[0], mockDevices[1], mockDevices[2], mockDevices[3]]);
+        } else if (i === 100) {
+          setDevices(mockDevices);
+          updateScanStats(mockDevices);
+        }
       }
+    } finally {
+      setScanning(false);
     }
-    
-    // เมื่อสแกนเสร็จสิ้น
-    setScanning(false);
   };
 
   const cancelScan = () => {
@@ -222,12 +231,12 @@ export function ScanProvider({ children }: { children: React.ReactNode }) {
 
   const attackDevice = async (deviceIP: string) => {
     try {
-      // จำลองการโจมตี
+      // Simulate attack
       await new Promise(resolve => setTimeout(resolve, 2000));
       console.log(`Simulated attack on device with IP: ${deviceIP}`);
       
-      // อัปเดทข้อมูลอุปกรณ์ (สมมติว่าการโจมตีสำเร็จ)
-      alert(`การทดสอบการโจมตีอุปกรณ์ ${deviceIP} สำเร็จ อุปกรณ์นี้มีความเสี่ยงสูง`);
+      // Update device data (assuming attack was successful)
+      alert(`Vulnerability scan of device ${deviceIP} completed. This device has high risk.`);
     } catch (error) {
       console.error('Attack failed:', error);
     }
