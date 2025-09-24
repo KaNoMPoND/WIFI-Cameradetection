@@ -55,48 +55,48 @@ export default function ResultCard({
     };
     
     return (
-        <div className="bg-[#1a1b2e] rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-900/20">
-            <div className="p-5">
-                <div className="flex justify-between items-start mb-3">
+        <div className="bg-gradient-to-br from-[#1a1b2e] to-[#232539] rounded-xl overflow-hidden transition-all duration-500 ease-out hover:shadow-xl hover:shadow-blue-900/20 border border-white/10 hover:border-white/20 group">
+            <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
                     <div>
-                        <div className="font-semibold text-lg">{name}</div>
+                        <div className="font-semibold text-lg group-hover:text-blue-300 transition-colors duration-500 ease-out">{name}</div>
                         <div className="text-sm text-[#8d8e98]">{type}</div>
                     </div>
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs ${getRiskBadgeClass()}`}>
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getRiskBadgeClass()}`}>
                         {getRiskLabel()}
                     </span>
                 </div>
                 
-                <div className="space-y-1 mb-4 text-sm text-[#8d8e98]">
-                    <div className="flex justify-between">
-                        <span>IP:</span>
-                        <span className="text-white">{ip}</span>
+                <div className="space-y-2 mb-6 text-sm text-[#8d8e98]">
+                    <div className="flex justify-between items-center">
+                        <span className="font-medium">IP:</span>
+                        <span className="text-white font-mono text-xs">{ip}</span>
                     </div>
-                    <div className="flex justify-between">
-                        <span>MAC:</span>
-                        <span className="text-white">{mac}</span>
+                    <div className="flex justify-between items-center">
+                        <span className="font-medium">MAC:</span>
+                        <span className="text-white font-mono text-xs">{mac}</span>
                     </div>
                     {manufacturer && (
-                        <div className="flex justify-between">
-                            <span>Manufacturer:</span>
-                            <span className="text-white">{manufacturer}</span>
+                        <div className="flex justify-between items-center">
+                            <span className="font-medium">Manufacturer:</span>
+                            <span className="text-white text-xs truncate ml-2">{manufacturer}</span>
                         </div>
                     )}
                     {model && (
-                        <div className="flex justify-between">
-                            <span>Model:</span>
-                            <span className="text-white">{model}</span>
+                        <div className="flex justify-between items-center">
+                            <span className="font-medium">Model:</span>
+                            <span className="text-white text-xs truncate ml-2">{model}</span>
                         </div>
                     )}
-                    <div className="flex justify-between">
-                        <span>Vulnerabilities:</span>
-                        <span className="text-white">{vulnerabilities.length} items</span>
+                    <div className="flex justify-between items-center">
+                        <span className="font-medium">Vulnerabilities:</span>
+                        <span className="text-white text-xs">{vulnerabilities.length} items</span>
                     </div>
                 </div>
                 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-col sm:flex-row gap-3">
                     <button 
-                        className="flex-1 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                        className="flex-1 bg-blue-600 text-white px-4 rounded-lg hover:bg-blue-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-blue-500/30 h-12 flex items-center justify-center"
                         onClick={handleViewDetails}
                     >
                         View Details
@@ -104,7 +104,7 @@ export default function ResultCard({
                     
                     {risk !== 'safe' && (
                         <button 
-                            className="flex-1 bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm"
+                            className="flex-1 bg-red-600 text-white px-4 rounded-lg hover:bg-red-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-red-500/30 h-12 flex items-center justify-center"
                             onClick={handleAttack}
                         >
                             Scan Vulnerabilities
@@ -113,7 +113,7 @@ export default function ResultCard({
                     
                     {showDetails && (
                         <button 
-                            className="flex-1 bg-[#232539] text-white px-3 py-2 rounded-lg hover:bg-[#2a2d43] transition-colors text-sm"
+                            className="flex-1 bg-[#232539] text-white px-4 rounded-lg hover:bg-[#2a2d43] transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-white/10 h-12 flex items-center justify-center"
                             onClick={() => setExpanded(!expanded)}
                         >
                             {expanded ? 'Hide Details' : 'Show Vulnerabilities'}
@@ -150,15 +150,6 @@ export default function ResultCard({
                         )}
                     </div>
                 )}
-            </div>
-            
-            <div className="w-full h-1">
-                <div className={`h-full ${
-                    risk === 'high' ? 'bg-gradient-to-r from-red-500 to-red-700' :
-                    risk === 'medium' ? 'bg-gradient-to-r from-yellow-500 to-yellow-700' :
-                    risk === 'low' ? 'bg-gradient-to-r from-blue-500 to-blue-700' :
-                    'bg-gradient-to-r from-green-500 to-green-700'
-                }`}></div>
             </div>
         </div>
     );

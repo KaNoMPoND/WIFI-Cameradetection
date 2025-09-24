@@ -11,7 +11,6 @@ export default function Navbar() {
     const navLinks = [
         { title: 'Home', path: '/' },
         { title: 'Scan History', path: '/scan-history' },
-        { title: 'Reports', path: '/report' },
         { title: 'Settings', path: '/settings' },
     ];
 
@@ -22,16 +21,15 @@ export default function Navbar() {
     };
     
     return (
-        <nav className="fixed top-0 w-full bg-[rgba(35,37,57,0.95)] backdrop-blur-sm p-4 z-50 shadow-md">
+        <nav className="fixed top-0 w-full bg-[rgba(35,37,57,0.95)] backdrop-blur-md border-b border-white/10 p-4 z-50 shadow-lg transition-all duration-300">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
-                <Link href="/" className="text-2xl font-semibold text-white flex items-center">
-                    <span className="mr-2 text-blue-500 text-3xl">🔒</span>
-                    <span>IoT Security Scanner</span>
+                <Link href="/" className="text-2xl font-semibold text-white hover:text-blue-400 transition-colors duration-200">
+                    IoT Security Scanner
                 </Link>
                 
                 {/* Mobile menu button */}
                 <button 
-                    className="md:hidden text-white p-2"
+                    className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors duration-200"
                     onClick={() => setMenuOpen(!menuOpen)}
                 >
                     <svg 
@@ -50,15 +48,15 @@ export default function Navbar() {
                 </button>
                 
                 {/* Desktop navigation */}
-                <div className="hidden md:flex space-x-5">
+                <div className="hidden md:flex space-x-1">
                     {navLinks.map(link => (
                         <Link 
                             key={link.path} 
                             href={link.path} 
-                            className={`transition-colors ${
+                            className={`px-4 py-2 rounded-lg transition-all duration-200 ${
                                 isActive(link.path) 
-                                ? 'text-white font-medium border-b-2 border-blue-500' 
-                                : 'text-[#8d8e98] hover:text-white'
+                                ? 'text-white font-medium bg-blue-600/20 border border-blue-500/30' 
+                                : 'text-[#8d8e98] hover:text-white hover:bg-white/10'
                             }`}
                         >
                             {link.title}
@@ -69,15 +67,15 @@ export default function Navbar() {
             
             {/* Mobile navigation */}
             {menuOpen && (
-                <div className="md:hidden pt-4 pb-2 px-2 mt-2 bg-[#1a1b2e] rounded-lg">
+                <div className="md:hidden pt-4 pb-2 px-2 mt-2 bg-[#1a1b2e] rounded-lg border border-white/10 animate-in slide-in-from-top-2 duration-200">
                     {navLinks.map(link => (
                         <Link 
                             key={link.path} 
                             href={link.path} 
-                            className={`block py-2 px-3 my-1 rounded ${
+                            className={`block py-3 px-4 my-1 rounded-lg transition-all duration-200 ${
                                 isActive(link.path) 
-                                ? 'bg-blue-600/20 text-white font-medium border-l-4 border-blue-500' 
-                                : 'text-[#8d8e98] hover:bg-[#232539] hover:text-white'
+                                ? 'bg-blue-600/20 text-white font-medium border border-blue-500/30' 
+                                : 'text-[#8d8e98] hover:bg-white/10 hover:text-white'
                             }`}
                             onClick={() => setMenuOpen(false)}
                         >

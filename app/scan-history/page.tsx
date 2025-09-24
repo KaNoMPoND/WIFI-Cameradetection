@@ -100,14 +100,14 @@ export default function ScanHistory() {
 
   // Filter and search logic
   const filteredRecords = scanRecords.filter(record => {
-    // Search filter
+    // Date search filter
     const matchesSearch = searchTerm === '' || 
-      record.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      record.date.includes(searchTerm) ||
-      record.time.includes(searchTerm) ||
-      record.deviceCount.toString().includes(searchTerm) ||
-      record.vulnerabilityCount.toString().includes(searchTerm) ||
-      record.riskLevel.includes(searchTerm);
+      (() => {
+        // Convert record date from DD/MM/YYYY to YYYY-MM-DD format for comparison
+        const recordDateParts = record.date.split('/');
+        const recordDateFormatted = `${recordDateParts[2]}-${recordDateParts[1].padStart(2, '0')}-${recordDateParts[0].padStart(2, '0')}`;
+        return recordDateFormatted === searchTerm;
+      })();
 
     // Date filter for "Last 7 Days"
     const matchesDateFilter = activeFilter !== 'last-7-days' || 
@@ -244,8 +244,7 @@ export default function ScanHistory() {
             </div>
             <div>
               <input 
-                type="text" 
-                placeholder="Search" 
+                type="date" 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="bg-[#1c1e30] px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -343,7 +342,13 @@ export default function ScanHistory() {
                         </span>
                       </td>
                       <td className="py-4 px-4">
-                        <Link href={`/report?id=${record.id}`} className="text-blue-500 hover:text-blue-400 mr-4">
+                        <Link 
+                          href={`/report?id=${record.id}`} 
+                          className="inline-flex items-center px-3 py-1.5 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-all duration-200 text-sm font-medium border border-blue-500/30 hover:border-blue-500/50"
+                        >
+                          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
                           View Report
                         </Link>
                       </td>
@@ -376,7 +381,7 @@ export default function ScanHistory() {
               Showing {sortedRecords.length > 0 ? '1' : '0'}-{sortedRecords.length} of {sortedRecords.length} entries
               {searchTerm && (
                 <span className="ml-2 text-blue-400">
-                  (Search: "{searchTerm}")
+                  (Date: {searchTerm})
                 </span>
               )}
               {activeFilter !== 'all' && (
