@@ -39,7 +39,7 @@ class HealthResponse(BaseModel):
 async def root():
     return {
         "message": "Simple API Server",
-        "version": "1.0.0", 
+        "version": "1.0.0",
         "status": "running",
         "timestamp": datetime.now().isoformat()
     }

@@ -98,6 +98,11 @@ npm run dev
 ```
 iot-security-scanner/
 ├── app/                   # โค้ดหลักของแอปพลิเคชัน
+│   ├── api/               # API routes
+│   │   ├── attack/        # API สำหรับทดสอบการโจมตี
+│   │   │   └── route.ts
+│   │   └── scan/          # API สำหรับการแสกนอุปกรณ์
+│   │       └── route.ts
 │   ├── components/        # React components ที่ใช้ร่วมกัน
 │   │   ├── DeviceDetails.tsx # แสดงรายละเอียดอุปกรณ์
 │   │   ├── Navbar.tsx     # Navigation bar
@@ -116,6 +121,11 @@ iot-security-scanner/
 │   ├── layout.tsx         # Root layout
 │   └── page.tsx           # หน้าหลัก (หน้าแสกน)
 ├── public/                # Static files
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
 ├── .next/                 # Next.js build output
 ├── node_modules/          # Dependencies
 ├── .gitignore             # Git ignore file
