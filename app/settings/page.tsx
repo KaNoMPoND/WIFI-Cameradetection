@@ -17,7 +17,6 @@ export default function Settings() {
         scanFrequency: 'daily',
         scanTime: '00:00',
         notifyOnComplete: true,
-        scanDeepInspection: false,
         enableWhitelist: false
     });
     
@@ -122,34 +121,39 @@ export default function Settings() {
     };
     
     return (
-        <main className="min-h-screen bg-[#141526] text-white">
+        <main className="min-h-screen bg-gradient-to-br from-[#141526] via-[#1a1b2e] to-[#141526] text-white">
             <Navbar />
             
             <div className="max-w-4xl mx-auto pt-24 px-4 pb-12">
-                <div className="bg-[rgba(35,37,57,0.95)] rounded-3xl p-8 mb-8">
-                    <h1 className="text-2xl font-bold mb-6">Settings</h1>
+                <div className="bg-[rgba(35,37,57,0.95)] backdrop-blur-sm rounded-3xl p-8 mb-8 border border-white/10 shadow-2xl">
+                    <h1 className="text-3xl font-bold mb-8 bg-gradient-to-r from-white to-blue-300 bg-clip-text text-transparent">Settings</h1>
                     
                     {saveSuccess && (
-                        <div className="mb-6 bg-green-500/20 border border-green-500 text-green-300 px-4 py-3 rounded">
-                            Settings saved successfully
+                        <div className="mb-8 bg-green-500/20 border border-green-500 text-green-300 px-6 py-4 rounded-xl backdrop-blur-sm animate-in slide-in-from-top-2 duration-300">
+                            <div className="flex items-center">
+                                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                                Settings saved successfully
+                            </div>
                         </div>
                     )}
                     
-                    <div className="flex border-b border-[#2a2d43] mb-6">
+                    <div className="flex border-b border-white/10 mb-8">
                         <button 
-                            className={`px-4 py-2 border-b-2 ${activeTab === 'scan' ? 'border-blue-500 text-white' : 'border-transparent text-gray-400'}`}
+                            className={`px-6 py-3 border-b-2 transition-all duration-200 ${activeTab === 'scan' ? 'border-blue-500 text-white bg-blue-600/10' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'}`}
                             onClick={() => setActiveTab('scan')}
                         >
                             Scanning
                         </button>
                         <button 
-                            className={`px-4 py-2 border-b-2 ${activeTab === 'notification' ? 'border-blue-500 text-white' : 'border-transparent text-gray-400'}`}
+                            className={`px-6 py-3 border-b-2 transition-all duration-200 ${activeTab === 'notification' ? 'border-blue-500 text-white bg-blue-600/10' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'}`}
                             onClick={() => setActiveTab('notification')}
                         >
                             Notifications
                         </button>
                         <button 
-                            className={`px-4 py-2 border-b-2 ${activeTab === 'privacy' ? 'border-blue-500 text-white' : 'border-transparent text-gray-400'}`}
+                            className={`px-6 py-3 border-b-2 transition-all duration-200 ${activeTab === 'privacy' ? 'border-blue-500 text-white bg-blue-600/10' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'}`}
                             onClick={() => setActiveTab('privacy')}
                         >
                             Privacy
@@ -216,20 +220,6 @@ export default function Settings() {
                                 />
                                 <label htmlFor="notifyOnComplete" className="text-sm font-medium">
                                     Notify when scan is completed
-                                </label>
-                            </div>
-                            
-                            <div className="flex items-center space-x-2">
-                                <input 
-                                    id="scanDeepInspection" 
-                                    type="checkbox" 
-                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                    name="scanDeepInspection"
-                                    checked={scanSettings.scanDeepInspection}
-                                    onChange={handleScanSettingChange}
-                                />
-                                <label htmlFor="scanDeepInspection" className="text-sm font-medium">
-                                    Deep scan (takes longer)
                                 </label>
                             </div>
                             
@@ -510,9 +500,9 @@ export default function Settings() {
                         </div>
                     )}
                     
-                    <div className="flex justify-end mt-8">
+                    <div className="flex justify-end mt-8 pt-6 border-t border-white/10">
                         <button 
-                            className="bg-blue-600 px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                            className="bg-blue-600 px-8 py-3 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl border border-blue-500/30 font-medium"
                             onClick={handleSaveSettings}
                         >
                             Save Settings

@@ -31,6 +31,60 @@ export default function Report() {
     highRiskDevices: 3,
     networkCoverage: 95
   });
+
+  // Update report data based on scan ID
+  useEffect(() => {
+    // Simulate fetching different report data based on scan ID
+    const mockReports = {
+      'SC-001': {
+        id: 'SC-001',
+        date: '15/01/2025',
+        time: '14:30',
+        duration: '00:05:32',
+        deviceScanned: 8,
+        vulnerabilitiesFound: 12,
+        criticalVulnerabilities: 4,
+        highRiskDevices: 3,
+        networkCoverage: 95
+      },
+      'SC-002': {
+        id: 'SC-002',
+        date: '18/01/2025',
+        time: '09:15',
+        duration: '00:03:45',
+        deviceScanned: 5,
+        vulnerabilitiesFound: 3,
+        criticalVulnerabilities: 0,
+        highRiskDevices: 1,
+        networkCoverage: 87
+      },
+      'SC-003': {
+        id: 'SC-003',
+        date: '20/01/2025',
+        time: '16:45',
+        duration: '00:07:12',
+        deviceScanned: 10,
+        vulnerabilitiesFound: 0,
+        criticalVulnerabilities: 0,
+        highRiskDevices: 0,
+        networkCoverage: 92
+      },
+      'SC-004': {
+        id: 'SC-004',
+        date: '22/01/2025',
+        time: '11:30',
+        duration: '00:06:18',
+        deviceScanned: 12,
+        vulnerabilitiesFound: 8,
+        criticalVulnerabilities: 2,
+        highRiskDevices: 4,
+        networkCoverage: 89
+      }
+    };
+
+    const report = mockReports[scanId as keyof typeof mockReports] || mockReports['SC-001'];
+    setReportData(report);
+  }, [scanId]);
   
   const [vulnerabilities, setVulnerabilities] = useState<Vulnerability[]>([
     {
@@ -117,11 +171,19 @@ export default function Report() {
       <div className="max-w-6xl mx-auto pt-24 px-4 pb-12">
         <div className="bg-[rgba(35,37,57,0.95)] rounded-3xl p-8 mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">Scan Report {reportData.id}</h1>
+            <div>
+              <h1 className="text-2xl font-bold">Scan Report {reportData.id}</h1>
+              <p className="text-gray-400 text-sm mt-1">
+                Generated on {reportData.date} at {reportData.time}
+              </p>
+            </div>
             <Link 
               href="/scan-history" 
-              className="bg-[#1c1e30] px-4 py-2 rounded-lg hover:bg-[#2a2d43] transition-colors"
+              className="inline-flex items-center px-4 py-2 bg-[#1c1e30] rounded-lg hover:bg-[#2a2d43] transition-all duration-200 text-sm font-medium border border-white/10 hover:border-white/20"
             >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
               Back to Scan History
             </Link>
           </div>

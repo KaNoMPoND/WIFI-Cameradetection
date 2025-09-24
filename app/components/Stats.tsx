@@ -28,27 +28,31 @@ export default function Stats() {
     };
     
     return (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8 text-[#8d8e98]">
-            <div>
-                <div className="text-4xl text-white mb-2">{scanStats.totalDevices}</div>
-                <div>Devices Found</div>
-            </div>
-            <div>
-                <div className="text-4xl text-white mb-2">{scanStats.vulnerableDevices}</div>
-                <div>Vulnerable Devices</div>
-            </div>
-            <div>
-                <div className="text-4xl text-white mb-2">{scanStats.totalVulnerabilities}</div>
-                <div>Vulnerabilities Found</div>
-            </div>
-            <div>
-                <div className={`text-4xl mb-2 ${getRiskColor()}`}>{getRiskLevel()}</div>
-                <div>Risk Level</div>
+        <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 transition-all duration-500 ease-out">
+                <div className="bg-gradient-to-br from-[#1a1b2e] to-[#232539] p-4 rounded-xl border border-white/10 shadow-lg transition-all duration-500 ease-out">
+                    <div className="text-2xl text-white mb-2 font-bold transition-all duration-500 ease-out">{scanStats.totalDevices}</div>
+                    <div className="text-[#8d8e98] font-medium text-xs leading-tight">Devices Found</div>
+                </div>
+                <div className="bg-gradient-to-br from-[#1a1b2e] to-[#232539] p-4 rounded-xl border border-white/10 shadow-lg transition-all duration-500 ease-out">
+                    <div className="text-2xl text-white mb-2 font-bold transition-all duration-500 ease-out">{scanStats.vulnerableDevices}</div>
+                    <div className="text-[#8d8e98] font-medium text-xs leading-tight">Vulnerable Devices</div>
+                </div>
+                <div className="bg-gradient-to-br from-[#1a1b2e] to-[#232539] p-4 rounded-xl border border-white/10 shadow-lg transition-all duration-500 ease-out">
+                    <div className="text-2xl text-white mb-2 font-bold transition-all duration-500 ease-out">{scanStats.totalVulnerabilities}</div>
+                    <div className="text-[#8d8e98] font-medium text-xs leading-tight">Vulnerabilities Found</div>
+                </div>
+                <div className="bg-gradient-to-br from-[#1a1b2e] to-[#232539] p-4 rounded-xl border border-white/10 shadow-lg transition-all duration-500 ease-out">
+                    <div className={`text-2xl mb-2 font-bold transition-all duration-500 ease-out ${getRiskColor()} text-center`}>{getRiskLevel()}</div>
+                    <div className="text-[#8d8e98] font-medium text-xs leading-tight text-center">Risk Level</div>
+                </div>
             </div>
             
             {scanStats.lastScanTime && (
-                <div className="col-span-full text-center mt-2 text-sm">
-                    Last Scan: {scanStats.lastScanTime}
+                <div className="text-center pt-6 border-t border-white/10">
+                    <div className="text-sm text-[#8d8e98] bg-[#1a1b2e] px-4 py-2 rounded-lg inline-block border border-white/10">
+                        Last Scan: {scanStats.lastScanTime}
+                    </div>
                 </div>
             )}
         </div>
