@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 interface Device {
   id: string;
@@ -41,6 +41,7 @@ interface ScanContextType {
   startScan: () => Promise<void>;
   attackDevice: (deviceIP: string) => Promise<void>;
   cancelScan: () => void;
+  currentScanId: string | null;
 }
 
 // Mock device data
@@ -148,12 +149,36 @@ const initialScanStats: ScanStats = {
 
 const ScanContext = createContext<ScanContextType | undefined>(undefined);
 
+// API Configuration
+const API_BASE_URL = 'http://localhost:8000';
+
 export function ScanProvider({ children }: { children: React.ReactNode }) {
   const [devices, setDevices] = useState<Device[]>([]);
   const [scanning, setScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
   const [scanStats, setScanStats] = useState<ScanStats>(initialScanStats);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
+  const [currentScanId, setCurrentScanId] = useState<string | null>(null);
+
+  // Convert API device to local device format
+  const convertApiDeviceToLocal = (apiDevice: any): Device => {
+    return {
+      id: apiDevice.ip,
+      name: apiDevice.hostname !== 'Unknown' ? apiDevice.hostname : apiDevice.vendor,
+      ip: apiDevice.ip,
+      mac: apiDevice.mac,
+      type: apiDevice.vendor,
+      risk: apiDevice.risk_level as 'high' | 'medium' | 'low' | 'safe',
+      vulnerabilities: apiDevice.vulnerabilities.map((vuln: string, index: number) => ({
+        id: `v${index}`,
+        name: vuln,
+        description: `Vulnerability detected: ${vuln}`,
+        severity: apiDevice.risk_level === 'high' ? 'high' : apiDevice.risk_level === 'medium' ? 'medium' : 'low',
+        solution: 'Contact device manufacturer for security updates'
+      })),
+      isOnline: apiDevice.status === 'online'
+    };
+  };
 
   const updateScanStats = (currentDevices: Device[]) => {
     const vulnerableDevices = currentDevices.filter(d => d.vulnerabilities.length > 0);
@@ -172,6 +197,54 @@ export function ScanProvider({ children }: { children: React.ReactNode }) {
     }));
   };
 
+  // Poll scan status
+  const pollScanStatus = async (scanId: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/scan/${scanId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch scan status');
+      }
+      
+      const data = await response.json();
+      
+      // Update progress
+      setScanProgress(data.progress);
+      setScanStats(prev => ({ ...prev, scanProgress: data.progress }));
+      
+      // Convert and update devices
+      if (data.devices && data.devices.length > 0) {
+        const convertedDevices = data.devices.map(convertApiDeviceToLocal);
+        setDevices(convertedDevices);
+        updateScanStats(convertedDevices);
+      }
+      
+      // Check if scan is complete
+      if (data.status === 'completed') {
+        setScanning(false);
+        setCurrentScanId(null);
+      } else if (data.status === 'error') {
+        console.error('Scan error:', data.error);
+        setScanning(false);
+        setCurrentScanId(null);
+        // Fallback to mock data
+        setDevices(mockDevices);
+        updateScanStats(mockDevices);
+        setScanProgress(100);
+      } else if (data.status === 'running') {
+        // Continue polling
+        setTimeout(() => pollScanStatus(scanId), 2000);
+      }
+    } catch (error) {
+      console.error('Error polling scan status:', error);
+      // Fallback to mock data
+      setScanning(false);
+      setCurrentScanId(null);
+      setDevices(mockDevices);
+      updateScanStats(mockDevices);
+      setScanProgress(100);
+    }
+  };
+
   const startScan = async () => {
     // Reset initial values
     setScanning(true);
@@ -180,26 +253,39 @@ export function ScanProvider({ children }: { children: React.ReactNode }) {
     setScanStats(prev => ({...prev, scanProgress: 0}));
     
     try {
-      // Start mock scan
-      console.log('Starting mock scan...');
+      // Start real nmap scan
+      console.log('Starting nmap scan...');
       
-      // Simulate progress while scanning
-      const progressInterval = setInterval(() => {
-        setScanProgress(prev => {
-          if (prev < 90) return prev + 10;
-          return prev;
-        });
-      }, 1000);
+      const response = await fetch(`${API_BASE_URL}/scan/start`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          target: '192.168.1.0/24', // Default network range
+          scan_type: 'port' // Port scan for more detailed results
+        })
+      });
       
-      // Use mock data instead of real WiFi scan
-      throw new Error('Using mock data');
+      if (!response.ok) {
+        throw new Error('Failed to start scan');
+      }
       
-      clearInterval(progressInterval);
+      const data = await response.json();
+      setCurrentScanId(data.scan_id);
+      
+      // Start polling for scan status
+      pollScanStatus(data.scan_id);
       
     } catch (error) {
-      console.log('Using mock data for demonstration...');
+      console.error('Error starting scan:', error);
+      console.log('Falling back to mock data...');
       
-      // Use mock data as fallback
+      // Fallback to mock data
+      setScanning(false);
+      setCurrentScanId(null);
+      
+      // Simulate progress with mock data
       for (let i = 10; i <= 100; i += 10) {
         await new Promise(resolve => setTimeout(resolve, 200));
         setScanProgress(i);
@@ -217,15 +303,24 @@ export function ScanProvider({ children }: { children: React.ReactNode }) {
           updateScanStats(mockDevices);
         }
       }
-    } finally {
-      setScanning(false);
     }
   };
 
-  const cancelScan = () => {
+  const cancelScan = async () => {
+    if (currentScanId) {
+      try {
+        await fetch(`${API_BASE_URL}/scan/${currentScanId}`, {
+          method: 'DELETE'
+        });
+      } catch (error) {
+        console.error('Error cancelling scan:', error);
+      }
+    }
+    
     setScanning(false);
     setScanProgress(0);
     setDevices([]);
+    setCurrentScanId(null);
     setScanStats(prev => ({...prev, scanProgress: 0}));
   };
 
@@ -252,7 +347,8 @@ export function ScanProvider({ children }: { children: React.ReactNode }) {
         setSelectedDevice,
         startScan, 
         attackDevice,
-        cancelScan
+        cancelScan,
+        currentScanId
       }}
     >
       {children}

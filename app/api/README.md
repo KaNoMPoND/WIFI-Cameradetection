@@ -1,25 +1,20 @@
-# FastAPI Backend for IoT Security Scanner
+# IoT Security Scanner API
 
-## การติดตั้งและรัน
+FastAPI backend สำหรับการสแกนอุปกรณ์ IoT ด้วย nmap
 
-### ข้อกำหนดเบื้องต้น
-- Python 3.8+
-- nmap ติดตั้งในระบบ
+## วิธีการติดตั้ง
 
-### การติดตั้ง
-
-1. ติดตั้ง Python dependencies:
+1. ติดตั้ง dependencies:
 ```bash
-cd app/api
 pip install -r requirements.txt
 ```
 
-2. ติดตั้ง nmap:
+2. ติดตั้ง nmap (จำเป็น):
    - **Windows**: ดาวน์โหลดจาก https://nmap.org/download.html
-   - **Ubuntu/Debian**: `sudo apt-get install nmap`
+   - **Linux**: `sudo apt-get install nmap`
    - **macOS**: `brew install nmap`
 
-### การรัน FastAPI Server
+## วิธีการรัน API
 
 ```bash
 cd app/api
@@ -28,62 +23,40 @@ python main.py
 
 หรือใช้ uvicorn โดยตรง:
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
+
+API จะทำงานที่: http://localhost:8000
 
 ## API Endpoints
 
-### GET /
-- **คำอธิบาย**: ข้อมูลพื้นฐานของ API
-- **Response**: ข้อมูล API และสถานะ
+### Network Scanning
 
-### GET /health
-- **คำอธิบาย**: ตรวจสอบสถานะของ API และ nmap
-- **Response**: สถานะ API และเวอร์ชัน nmap
-
-### POST /scan
-- **คำอธิบาย**: แสกนเครือข่ายเพื่อค้นหาอุปกรณ์ IoT
-- **Request Body**:
+- `POST /scan/start` - เริ่มการสแกนเครือข่าย
   ```json
   {
     "target": "192.168.1.0/24",
-    "scan_type": "quick",
-    "ports": "80,443,22"
+    "scan_type": "port"
   }
   ```
-- **Response**: รายการอุปกรณ์ที่พบพร้อมข้อมูลความปลอดภัย
 
-### POST /attack
-- **คำอธิบาย**: ทดสอบการโจมตีอุปกรณ์เป้าหมาย
-- **Request Body**:
-  ```json
-  {
-    "target_ip": "192.168.1.100",
-    "attack_type": "default_password",
-    "port": 80,
-    "service": "http"
-  }
-  ```
-- **Response**: ผลการทดสอบและคำแนะนำ
+- `GET /scan/{scan_id}` - ดูสถานะการสแกน
+- `GET /scan/{scan_id}/devices` - ดูรายการอุปกรณ์ที่พบ
+- `DELETE /scan/{scan_id}` - ยกเลิกการสแกน
+- `GET /scans` - ดูรายการการสแกนทั้งหมด
+- `GET /network/info` - ดูข้อมูลเครือข่ายปัจจุบัน
 
-## ประเภทการแสกน
+### Health Check
 
-- **quick**: แสกนเร็ว, ports ที่พบบ่อย
-- **full**: แสกนครบทุก ports (ช้า)
-- **stealth**: แสกนแบบหลบเลี่ยงการตรวจจับ
+- `GET /health` - ตรวจสอบสถานะ API
 
-## ประเภทการโจมตี
+## การทดสอบ
 
-- **default_password**: ทดสอบรหัสผ่านเริ่มต้น
-- **brute_force**: ทดสอบ brute force password
-- **vulnerability_exploit**: ทดสอบช่องโหว่ที่ทราบ
+เปิด browser ไปที่:
+- API Docs: http://localhost:8000/docs
+- Alternative Docs: http://localhost:8000/redoc
 
-## ความปลอดภัย
+## หมายเหตุ
 
-⚠️ **คำเตือน**: ใช้เครื่องมือนี้เฉพาะกับเครือข่ายและอุปกรณ์ที่คุณเป็นเจ้าของหรือได้รับอนุญาตเท่านั้น
-
-## การใช้งานร่วมกับ Next.js
-
-FastAPI จะรันบนพอร์ต 8000 และ Next.js บนพอร์ต 3001
-CORS ได้ถูกตั้งค่าให้รองรับการเรียกจาก localhost:3000 และ localhost:3001 แล้ว
-
+- ต้องรัน API ด้วยสิทธิ์ Administrator/sudo เพื่อให้ nmap สแกนได้เต็มที่
+- สำหรับ Windows, อาจต้องปิด Firewall หรืออนุญาตให้ nmap ทำงาน
