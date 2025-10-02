@@ -219,7 +219,7 @@ export default function Settings() {
                                     onChange={handleScanSettingChange}
                                 />
                                 <label htmlFor="notifyOnComplete" className="text-sm font-medium">
-                                    Notify when scan is completed
+                                    แจ้งเตือนเมื่อการแสกนเสร็จสิ้น
                                 </label>
                             </div>
                             
